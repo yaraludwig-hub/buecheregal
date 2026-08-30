@@ -25,10 +25,120 @@ export default {
     }
 
     try {
-      const requestUrl = new URL(request.url);
-      const query = requestUrl.searchParams.get("q");
+  const requestUrl = new URL(request.url);
 
-      if (!query || !query.trim()) {
+  /*
+    Cover-Proxy für die Farbanalyse im Regal.
+    Nur Open-Library-Cover sind erlaubt.
+  */
+
+  const coverUrl =
+    requestUrl.searchParams.get("cover");
+
+  if (coverUrl) {
+
+    let parsedCoverUrl;
+
+    try {
+
+      parsedCoverUrl =
+        new URL(coverUrl);
+
+    } catch (error) {
+
+      return jsonResponse(
+        {
+          error:
+            "Ungültige Cover-URL."
+        },
+        400,
+        corsHeaders
+      );
+
+    }
+
+
+    if (
+      parsedCoverUrl.protocol !== "https:" ||
+      parsedCoverUrl.hostname !==
+        "covers.openlibrary.org"
+    ) {
+
+      return jsonResponse(
+        {
+          error:
+            "Diese Cover-Quelle ist nicht erlaubt."
+        },
+        400,
+        corsHeaders
+      );
+
+    }
+
+
+    const coverResponse =
+      await fetch(
+        parsedCoverUrl.toString(),
+        {
+          headers: {
+            "User-Agent":
+              "Buecherregal-App/1.0"
+          }
+        }
+      );
+
+
+    if (!coverResponse.ok) {
+
+      return jsonResponse(
+        {
+          error:
+            "Cover konnte nicht geladen werden."
+        },
+        coverResponse.status,
+        corsHeaders
+      );
+
+    }
+
+
+    const imageHeaders =
+      new Headers(
+        coverResponse.headers
+      );
+
+    imageHeaders.set(
+      "Access-Control-Allow-Origin",
+      "*"
+    );
+
+    imageHeaders.set(
+      "Cache-Control",
+      "public, max-age=86400"
+    );
+
+    imageHeaders.delete(
+      "Set-Cookie"
+    );
+
+
+    return new Response(
+      coverResponse.body,
+      {
+        status:
+          coverResponse.status,
+        headers:
+          imageHeaders
+      }
+    );
+
+  }
+
+
+  const query =
+    requestUrl.searchParams.get("q");
+
+  if (!query || !query.trim()) {
         return jsonResponse(
           {
             error: "Bitte einen Suchbegriff mit ?q= angeben."
