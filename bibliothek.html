@@ -49,34 +49,81 @@
     }
 
     .book-card {
+      display: flex;
+      gap: 15px;
       background: #fffaf4;
       border-radius: 20px;
       padding: 16px;
       box-shadow: 0 6px 18px rgba(76, 52, 37, 0.08);
     }
 
+    .cover {
+      width: 75px;
+      height: 110px;
+      flex-shrink: 0;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #ead9c8;
+    }
+
+    .cover-placeholder {
+      width: 75px;
+      height: 110px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      background: #ead9c8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+
+    .book-content {
+      flex: 1;
+      min-width: 0;
+    }
+
     .book-title {
       margin: 0 0 5px;
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 700;
     }
 
     .book-author {
-      margin: 0 0 12px;
+      margin: 0 0 10px;
       color: #806f62;
+      font-size: 15px;
+    }
+
+    .rating {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 10px;
+    }
+
+    .stars {
+      color: #b88f6d;
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
+
+    .rating-number {
+      color: #948275;
+      font-size: 12px;
     }
 
     .book-info {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
     }
 
     .tag {
       background: #ead9c8;
       border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 13px;
+      padding: 5px 9px;
+      font-size: 12px;
       color: #5f493a;
     }
 
@@ -92,19 +139,292 @@
 </head>
 
 <body>
+
   <main class="app">
 
-    <a class="back" href="index.html">← Zurück zur Startseite</a>
+    <a class="back" href="index.html">
+      ← Zurück zur Startseite
+    </a>
 
     <h1>Bibliothek</h1>
-    <p class="subtitle">Alle Bücher aus deiner Sammlung</p>
+
+    <p class="subtitle">
+      Alle Bücher aus deiner Sammlung
+    </p>
 
     <div class="book-list" id="bookList">
+
       <div class="empty">
         Bibliothek wird geladen …
       </div>
+
     </div>
 
   </main>
+
+
+  <script>
+
+    function openDatabase() {
+      return new Promise((resolve, reject) => {
+
+        const request = indexedDB.open("buecherregalDB", 1);
+
+        request.onupgradeneeded = function(event) {
+          const db = event.target.result;
+
+          if (!db.objectStoreNames.contains("books")) {
+            db.createObjectStore("books", {
+              keyPath: "id"
+            });
+          }
+        };
+
+        request.onsuccess = function(event) {
+          resolve(event.target.result);
+        };
+
+        request.onerror = function() {
+          reject(new Error("Datenbank konnte nicht geöffnet werden."));
+        };
+
+      });
+    }
+
+
+    async function loadBooks() {
+
+      const bookList = document.getElementById("bookList");
+
+      try {
+
+        const db = await openDatabase();
+
+        const transaction =
+          db.transaction("books", "readonly");
+
+        const store =
+          transaction.objectStore("books");
+
+        const request =
+          store.getAll();
+
+
+        request.onsuccess = function() {
+
+          const books = request.result;
+
+          bookList.innerHTML = "";
+
+
+          if (books.length === 0) {
+
+            bookList.innerHTML = `
+              <div class="empty">
+                Noch keine Bücher in deiner Bibliothek.
+              </div>
+            `;
+
+            return;
+          }
+
+
+          books.sort((a, b) => {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          });
+
+
+          books.forEach((book) => {
+
+            const card =
+              document.createElement("div");
+
+            card.className = "book-card";
+
+
+            const cover = document.createElement(
+              book.cover ? "img" : "div"
+            );
+
+            if (book.cover) {
+
+              cover.className = "cover";
+              cover.src = book.cover;
+              cover.alt = "Cover von " + book.title;
+
+              cover.onerror = function() {
+                this.style.display = "none";
+              };
+
+            } else {
+
+              cover.className = "cover-placeholder";
+              cover.textContent = "📖";
+
+            }
+
+
+            const content =
+              document.createElement("div");
+
+            content.className = "book-content";
+
+
+            const title =
+              document.createElement("h2");
+
+            title.className = "book-title";
+            title.textContent = book.title;
+
+
+            const author =
+              document.createElement("p");
+
+            author.className = "book-author";
+            author.textContent = book.author;
+
+
+            content.appendChild(title);
+            content.appendChild(author);
+
+
+            if (book.rating) {
+
+              const rating =
+                document.createElement("div");
+
+              rating.className = "rating";
+
+
+              const stars =
+                document.createElement("span");
+
+              stars.className = "stars";
+              stars.textContent = createStars(book.rating);
+
+
+              const number =
+                document.createElement("span");
+
+              number.className = "rating-number";
+              number.textContent = book.rating + " / 5";
+
+
+              rating.appendChild(stars);
+              rating.appendChild(number);
+
+              content.appendChild(rating);
+            }
+
+
+            const info =
+              document.createElement("div");
+
+            info.className = "book-info";
+
+
+            addTag(info, book.status);
+            addTag(info, book.language);
+            addTag(info, book.format);
+
+
+            if (book.pages) {
+              addTag(info, book.pages + " Seiten");
+            }
+
+
+            if (book.series) {
+
+              let seriesText = book.series;
+
+              if (book.volume) {
+                seriesText += " · Band " + book.volume;
+              }
+
+              addTag(info, seriesText);
+            }
+
+
+            content.appendChild(info);
+
+            card.appendChild(cover);
+            card.appendChild(content);
+
+            bookList.appendChild(card);
+
+          });
+
+        };
+
+
+        request.onerror = function() {
+
+          bookList.innerHTML = `
+            <div class="empty">
+              Die Bücher konnten nicht geladen werden.
+            </div>
+          `;
+
+        };
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        bookList.innerHTML = `
+          <div class="empty">
+            Die Bibliothek konnte nicht geöffnet werden.
+          </div>
+        `;
+
+      }
+
+    }
+
+
+    function addTag(container, text) {
+
+      if (!text) {
+        return;
+      }
+
+      const tag =
+        document.createElement("span");
+
+      tag.className = "tag";
+      tag.textContent = text;
+
+      container.appendChild(tag);
+
+    }
+
+
+    function createStars(rating) {
+
+      let stars = "";
+
+      for (let i = 1; i <= 5; i++) {
+
+        if (rating >= i) {
+          stars += "★";
+
+        } else if (rating >= i - 0.5) {
+          stars += "◐";
+
+        } else {
+          stars += "☆";
+        }
+
+      }
+
+      return stars;
+    }
+
+
+    loadBooks();
+
+  </script>
+
 </body>
 </html>
