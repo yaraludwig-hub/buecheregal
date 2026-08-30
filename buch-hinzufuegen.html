@@ -7,6 +7,148 @@
   <title>Buch hinzufügen</title>
 
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    .search-card {
+      background: var(--surface);
+      border-radius: var(--radius-large);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .search-card h2 {
+      margin: 0 0 8px;
+      font-family: Georgia, serif;
+      font-size: 22px;
+    }
+
+    .search-card p {
+      margin: 0 0 16px;
+      color: var(--text-soft);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-row input {
+      flex: 1;
+    }
+
+    .search-button {
+      flex-shrink: 0;
+      border: none;
+      border-radius: 14px;
+      padding: 0 18px;
+      background: var(--accent);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .search-status {
+      margin-top: 12px;
+      color: var(--text-soft);
+      font-size: 14px;
+    }
+
+    .search-results {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .search-result {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: white;
+      padding: 12px;
+      display: flex;
+      gap: 12px;
+      text-align: left;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .search-result:active {
+      transform: scale(0.99);
+    }
+
+    .search-result-cover {
+      width: 56px;
+      height: 82px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border-radius: 6px;
+      background: var(--surface-soft);
+    }
+
+    .search-result-placeholder {
+      width: 56px;
+      height: 82px;
+      flex-shrink: 0;
+      border-radius: 6px;
+      background: var(--surface-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .search-result-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .search-result-title {
+      margin: 0 0 4px;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .search-result-author {
+      margin: 0 0 6px;
+      color: var(--text-soft);
+      font-size: 14px;
+    }
+
+    .search-result-meta {
+      margin: 0;
+      color: var(--text-faint);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .selected-book {
+      display: none;
+      margin-top: 14px;
+      background: #f4e8dc;
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 14px;
+      color: #604b3d;
+    }
+
+    .selected-book.open {
+      display: block;
+    }
+
+    @media (max-width: 390px) {
+      .search-row {
+        flex-direction: column;
+      }
+
+      .search-button {
+        padding: 13px;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -20,14 +162,68 @@
     <header class="page-header">
       <h1>Buch hinzufügen</h1>
       <p class="page-subtitle">
-        Füge ein Buch zu deiner Sammlung hinzu.
+        Suche nach einem Buch oder trage es manuell ein.
       </p>
     </header>
 
-    <form class="card" style="padding: 22px;" id="bookForm">
+
+    <section class="search-card">
+
+      <h2>Buch suchen</h2>
+
+      <p>
+        Suche nach Titel, Autor/in oder ISBN. Wenn mehrere Ausgaben gefunden werden,
+        kannst du die passende auswählen.
+      </p>
+
+      <div class="search-row">
+
+        <input
+          id="bookSearchInput"
+          type="search"
+          placeholder="z. B. Fourth Wing Rebecca Yarros"
+          autocomplete="off"
+        >
+
+        <button
+          id="bookSearchButton"
+          class="search-button"
+          type="button"
+        >
+          Suchen
+        </button>
+
+      </div>
+
+      <div
+        id="searchStatus"
+        class="search-status"
+      ></div>
+
+      <div
+        id="searchResults"
+        class="search-results"
+      ></div>
+
+      <div
+        id="selectedBook"
+        class="selected-book"
+      ></div>
+
+    </section>
+
+
+    <form
+      class="card"
+      style="padding: 22px;"
+      id="bookForm"
+    >
 
       <div class="field">
-        <label for="title">Titel</label>
+
+        <label for="title">
+          Titel
+        </label>
 
         <input
           id="title"
@@ -35,10 +231,15 @@
           placeholder="z. B. Fourth Wing"
           required
         >
+
       </div>
 
+
       <div class="field">
-        <label for="author">Autor/in</label>
+
+        <label for="author">
+          Autor/in
+        </label>
 
         <input
           id="author"
@@ -46,7 +247,9 @@
           placeholder="z. B. Rebecca Yarros"
           required
         >
+
       </div>
+
 
       <div class="two-columns">
 
@@ -57,8 +260,20 @@
           </label>
 
           <select id="language">
+            <option value="">Nicht angegeben</option>
             <option>Deutsch</option>
             <option>Englisch</option>
+            <option>Französisch</option>
+            <option>Spanisch</option>
+            <option>Italienisch</option>
+            <option>Niederländisch</option>
+            <option>Polnisch</option>
+            <option>Portugiesisch</option>
+            <option>Schwedisch</option>
+            <option>Dänisch</option>
+            <option>Norwegisch</option>
+            <option>Finnisch</option>
+            <option>Andere</option>
           </select>
 
         </div>
@@ -79,6 +294,58 @@
         </div>
 
       </div>
+
+
+      <div class="two-columns">
+
+        <div class="field">
+
+          <label for="year">
+            Erscheinungsjahr
+          </label>
+
+          <input
+            id="year"
+            type="number"
+            min="1000"
+            max="2100"
+            placeholder="2023"
+          >
+
+        </div>
+
+        <div class="field">
+
+          <label for="isbn">
+            ISBN
+          </label>
+
+          <input
+            id="isbn"
+            type="text"
+            inputmode="numeric"
+            placeholder="978..."
+          >
+
+        </div>
+
+      </div>
+
+
+      <div class="field">
+
+        <label for="genre">
+          Genre
+        </label>
+
+        <input
+          id="genre"
+          type="text"
+          placeholder="z. B. Fantasy"
+        >
+
+      </div>
+
 
       <div class="two-columns">
 
@@ -113,6 +380,7 @@
         </div>
 
       </div>
+
 
       <div class="field">
 
@@ -185,6 +453,7 @@
 
       </div>
 
+
       <div class="two-columns">
 
         <div class="field">
@@ -219,6 +488,7 @@
 
       </div>
 
+
       <div class="field">
 
         <label for="cover">
@@ -232,10 +502,11 @@
         >
 
         <div class="hint">
-          Die automatische Buch- und Coversuche bauen wir als Nächstes ein.
+          Bei einer ausgewählten Suchausgabe wird das Cover automatisch übernommen.
         </div>
 
       </div>
+
 
       <div class="field">
 
@@ -250,6 +521,7 @@
 
       </div>
 
+
       <button
         class="save-button"
         id="saveButton"
@@ -263,58 +535,508 @@
   </main>
 
 
+  <script src="buchsuche.js"></script>
+
   <script>
 
-    const stars =
-      document.querySelectorAll(".star");
+    const searchInput =
+      document.getElementById("bookSearchInput");
 
-    const ratingInput =
-      document.getElementById("rating");
+    const searchButton =
+      document.getElementById("bookSearchButton");
 
-    const ratingText =
-      document.getElementById("ratingText");
+    const searchStatus =
+      document.getElementById("searchStatus");
 
-    let currentRating = 0;
+    const searchResults =
+      document.getElementById("searchResults");
 
-
-    stars.forEach((star) => {
-
-      star.addEventListener(
-        "click",
-        function(event) {
-
-          const rect =
-            star.getBoundingClientRect();
-
-          const clickPosition =
-            event.clientX - rect.left;
-
-          const starValue =
-            Number(star.dataset.value);
+    const selectedBook =
+      document.getElementById("selectedBook");
 
 
-          if (
-            clickPosition <
-            rect.width / 2
-          ) {
+    searchButton.addEventListener(
+      "click",
+      runBookSearch
+    );
 
-            currentRating =
-              starValue - 0.5;
+
+    searchInput.addEventListener(
+      "keydown",
+      function(event) {
+
+        if (event.key === "Enter") {
+
+          event.preventDefault();
+
+          runBookSearch();
+
+        }
+
+      }
+    );
+
+
+    async function runBookSearch() {
+
+      const query =
+        searchInput.value.trim();
+
+
+      if (!query) {
+
+        searchStatus.textContent =
+          "Bitte gib einen Titel, eine Autorin, einen Autor oder eine ISBN ein.";
+
+        searchResults.innerHTML = "";
+
+        return;
+
+      }
+
+
+      searchButton.disabled = true;
+
+      searchButton.textContent =
+        "Suche …";
+
+      searchStatus.textContent =
+        "Bücher werden gesucht …";
+
+      searchResults.innerHTML = "";
+
+      selectedBook.classList.remove(
+        "open"
+      );
+
+
+      try {
+
+        const books =
+          await BookSearch.searchBooks(
+            query
+          );
+
+
+        if (books.length === 0) {
+
+          searchStatus.textContent =
+            "Keine passenden Bücher gefunden.";
+
+          return;
+
+        }
+
+
+        searchStatus.textContent =
+          `${books.length} Ergebnisse gefunden. Wähle die passende Ausgabe aus.`;
+
+        displaySearchResults(
+          books
+        );
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        searchStatus.textContent =
+          "Die Buchsuche konnte gerade nicht geladen werden.";
+
+      } finally {
+
+        searchButton.disabled = false;
+
+        searchButton.textContent =
+          "Suchen";
+
+      }
+
+    }
+
+
+    function displaySearchResults(
+      books
+    ) {
+
+      searchResults.innerHTML = "";
+
+
+      books.forEach(
+        function(book) {
+
+          const button =
+            document.createElement(
+              "button"
+            );
+
+          button.type =
+            "button";
+
+          button.className =
+            "search-result";
+
+
+          if (book.thumbnail) {
+
+            const image =
+              document.createElement(
+                "img"
+              );
+
+            image.className =
+              "search-result-cover";
+
+            image.src =
+              book.thumbnail;
+
+            image.alt =
+              `Cover von ${book.title}`;
+
+            image.loading =
+              "lazy";
+
+            button.appendChild(
+              image
+            );
+
 
           } else {
 
-            currentRating =
-              starValue;
+            const placeholder =
+              document.createElement(
+                "div"
+              );
+
+            placeholder.className =
+              "search-result-placeholder";
+
+            placeholder.textContent =
+              "📖";
+
+            button.appendChild(
+              placeholder
+            );
 
           }
 
 
-          updateStars();
+          const content =
+            document.createElement(
+              "div"
+            );
+
+          content.className =
+            "search-result-content";
+
+
+          const title =
+            document.createElement(
+              "div"
+            );
+
+          title.className =
+            "search-result-title";
+
+          title.textContent =
+            book.title ||
+            "Ohne Titel";
+
+
+          const author =
+            document.createElement(
+              "div"
+            );
+
+          author.className =
+            "search-result-author";
+
+          author.textContent =
+            book.author ||
+            "Autor/in unbekannt";
+
+
+          const meta =
+            document.createElement(
+              "p"
+            );
+
+          meta.className =
+            "search-result-meta";
+
+
+          const metaParts = [];
+
+
+          if (book.year) {
+            metaParts.push(
+              book.year
+            );
+          }
+
+
+          if (book.language) {
+            metaParts.push(
+              book.language
+            );
+          }
+
+
+          if (book.pages) {
+            metaParts.push(
+              `${book.pages} Seiten`
+            );
+          }
+
+
+          if (book.isbn) {
+            metaParts.push(
+              `ISBN ${book.isbn}`
+            );
+          }
+
+
+          meta.textContent =
+            metaParts.join(" · ");
+
+
+          content.appendChild(
+            title
+          );
+
+          content.appendChild(
+            author
+          );
+
+          content.appendChild(
+            meta
+          );
+
+          button.appendChild(
+            content
+          );
+
+
+          button.addEventListener(
+            "click",
+            function() {
+
+              applyBookToForm(
+                book
+              );
+
+            }
+          );
+
+
+          searchResults.appendChild(
+            button
+          );
 
         }
       );
 
-    });
+    }
+
+
+    function applyBookToForm(
+      book
+    ) {
+
+      document.getElementById(
+        "title"
+      ).value =
+        book.title || "";
+
+
+      document.getElementById(
+        "author"
+      ).value =
+        book.author || "";
+
+
+      document.getElementById(
+        "pages"
+      ).value =
+        book.pages || "";
+
+
+      document.getElementById(
+        "year"
+      ).value =
+        book.year || "";
+
+
+      document.getElementById(
+        "isbn"
+      ).value =
+        book.isbn || "";
+
+
+      document.getElementById(
+        "genre"
+      ).value =
+        book.genre || "";
+
+
+      document.getElementById(
+        "cover"
+      ).value =
+        book.cover || "";
+
+
+      setLanguage(
+        book.language
+      );
+
+
+      selectedBook.innerHTML = "";
+
+      const strong =
+        document.createElement(
+          "strong"
+        );
+
+      strong.textContent =
+        "Ausgabe übernommen: ";
+
+
+      const text =
+        document.createTextNode(
+          `${book.title || "Ohne Titel"}${book.year ? " (" + book.year + ")" : ""}`
+        );
+
+
+      selectedBook.appendChild(
+        strong
+      );
+
+      selectedBook.appendChild(
+        text
+      );
+
+      selectedBook.classList.add(
+        "open"
+      );
+
+
+      document
+        .getElementById(
+          "bookForm"
+        )
+        .scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+
+    }
+
+
+    function setLanguage(
+      language
+    ) {
+
+      const select =
+        document.getElementById(
+          "language"
+        );
+
+
+      const options =
+        Array.from(
+          select.options
+        );
+
+
+      const matchingOption =
+        options.find(
+          option =>
+            option.value ===
+            language
+        );
+
+
+      if (matchingOption) {
+
+        select.value =
+          language;
+
+      } else if (language) {
+
+        select.value =
+          "Andere";
+
+      } else {
+
+        select.value =
+          "";
+
+      }
+
+    }
+
+
+    const stars =
+      document.querySelectorAll(
+        ".star"
+      );
+
+    const ratingInput =
+      document.getElementById(
+        "rating"
+      );
+
+    const ratingText =
+      document.getElementById(
+        "ratingText"
+      );
+
+    let currentRating = 0;
+
+
+    stars.forEach(
+      function(star) {
+
+        star.addEventListener(
+          "click",
+          function(event) {
+
+            const rect =
+              star.getBoundingClientRect();
+
+            const clickPosition =
+              event.clientX -
+              rect.left;
+
+            const starValue =
+              Number(
+                star.dataset.value
+              );
+
+
+            if (
+              clickPosition <
+              rect.width / 2
+            ) {
+
+              currentRating =
+                starValue - 0.5;
+
+            } else {
+
+              currentRating =
+                starValue;
+
+            }
+
+
+            updateStars();
+
+          }
+        );
+
+      }
+    );
 
 
     function updateStars() {
@@ -330,45 +1052,51 @@
           : "Keine Bewertung";
 
 
-      stars.forEach((star) => {
+      stars.forEach(
+        function(star) {
 
-        const starValue =
-          Number(star.dataset.value);
-
-
-        star.classList.remove(
-          "full",
-          "half"
-        );
+          const starValue =
+            Number(
+              star.dataset.value
+            );
 
 
-        if (
-          currentRating >=
-          starValue
-        ) {
-
-          star.classList.add(
-            "full"
-          );
-
-        } else if (
-          currentRating ===
-          starValue - 0.5
-        ) {
-
-          star.classList.add(
+          star.classList.remove(
+            "full",
             "half"
           );
 
-        }
 
-      });
+          if (
+            currentRating >=
+            starValue
+          ) {
+
+            star.classList.add(
+              "full"
+            );
+
+          } else if (
+            currentRating ===
+            starValue - 0.5
+          ) {
+
+            star.classList.add(
+              "half"
+            );
+
+          }
+
+        }
+      );
 
     }
 
 
     document
-      .getElementById("clearRating")
+      .getElementById(
+        "clearRating"
+      )
       .addEventListener(
         "click",
         function() {
@@ -384,7 +1112,10 @@
     function openDatabase() {
 
       return new Promise(
-        (resolve, reject) => {
+        function(
+          resolve,
+          reject
+        ) {
 
           const request =
             indexedDB.open(
@@ -445,7 +1176,9 @@
 
 
     document
-      .getElementById("bookForm")
+      .getElementById(
+        "bookForm"
+      )
       .addEventListener(
         "submit",
         async function(event) {
@@ -455,13 +1188,18 @@
 
           const title =
             document
-              .getElementById("title")
+              .getElementById(
+                "title"
+              )
               .value
               .trim();
 
+
           const author =
             document
-              .getElementById("author")
+              .getElementById(
+                "author"
+              )
               .value
               .trim();
 
@@ -488,14 +1226,21 @@
           }
 
 
+          const now =
+            new Date()
+              .toISOString();
+
+
           const book = {
 
             id:
               crypto.randomUUID(),
 
-            title: title,
+            title:
+              title,
 
-            author: author,
+            author:
+              author,
 
             language:
               document.getElementById(
@@ -508,6 +1253,29 @@
                   "pages"
                 ).value
               ) || null,
+
+            year:
+              Number(
+                document.getElementById(
+                  "year"
+                ).value
+              ) || null,
+
+            isbn:
+              document
+                .getElementById(
+                  "isbn"
+                )
+                .value
+                .trim(),
+
+            genre:
+              document
+                .getElementById(
+                  "genre"
+                )
+                .value
+                .trim(),
 
             status:
               document.getElementById(
@@ -553,9 +1321,17 @@
                 .value
                 .trim(),
 
+            spineImageUrl:
+              "",
+
+            sortOrder:
+              Date.now(),
+
             createdAt:
-              new Date()
-                .toISOString()
+              now,
+
+            updatedAt:
+              now
 
           };
 
@@ -572,12 +1348,14 @@
               );
 
             const store =
-              transaction
-                .objectStore(
-                  "books"
-                );
+              transaction.objectStore(
+                "books"
+              );
 
-            store.add(book);
+
+            store.add(
+              book
+            );
 
 
             transaction.oncomplete =
@@ -606,7 +1384,9 @@
 
           } catch (error) {
 
-            console.error(error);
+            console.error(
+              error
+            );
 
             alert(
               "Das Buch konnte nicht gespeichert werden."
