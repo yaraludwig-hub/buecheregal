@@ -104,6 +104,31 @@
       color: #948275;
       font-size: 13px;
     }
+    .star-rating {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.star {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 34px;
+  line-height: 1;
+  color: #d8c8bb;
+  cursor: pointer;
+}
+
+.star.active {
+  color: #b88f6d;
+}
+
+.rating-text {
+  margin-top: 7px;
+  color: #948275;
+  font-size: 13px;
+}
   </style>
 </head>
 
@@ -158,22 +183,23 @@
           </select>
         </div>
 
-        <div class="field">
-          <label for="rating">Bewertung</label>
-          <select id="rating">
-            <option value="">Keine</option>
-            <option>0.5</option>
-            <option>1</option>
-            <option>1.5</option>
-            <option>2</option>
-            <option>2.5</option>
-            <option>3</option>
-            <option>3.5</option>
-            <option>4</option>
-            <option>4.5</option>
-            <option>5</option>
-          </select>
-        </div>
+     <div class="field">
+  <label>Bewertung</label>
+
+  <div class="star-rating" id="starRating">
+    <button type="button" class="star" data-value="1">★</button>
+    <button type="button" class="star" data-value="2">★</button>
+    <button type="button" class="star" data-value="3">★</button>
+    <button type="button" class="star" data-value="4">★</button>
+    <button type="button" class="star" data-value="5">★</button>
+  </div>
+
+  <div class="rating-text" id="ratingText">
+    Keine Bewertung
+  </div>
+
+  <input type="hidden" id="rating" value="">
+</div>
 
       </div>
 
@@ -221,5 +247,46 @@
     </form>
 
   </main>
+  <script>
+  const stars = document.querySelectorAll(".star");
+  const ratingInput = document.getElementById("rating");
+  const ratingText = document.getElementById("ratingText");
+
+  let currentRating = 0;
+
+  stars.forEach((star) => {
+    star.addEventListener("click", (event) => {
+      const rect = star.getBoundingClientRect();
+      const clickPosition = event.clientX - rect.left;
+      const half = clickPosition < rect.width / 2;
+
+      const starValue = Number(star.dataset.value);
+
+      currentRating = half ? starValue - 0.5 : starValue;
+
+      ratingInput.value = currentRating;
+      ratingText.textContent = currentRating + " von 5 Sternen";
+
+      updateStars();
+    });
+  });
+
+  function updateStars() {
+    stars.forEach((star) => {
+      const starValue = Number(star.dataset.value);
+
+      if (currentRating >= starValue) {
+        star.textContent = "★";
+        star.classList.add("active");
+      } else if (currentRating === starValue - 0.5) {
+        star.textContent = "◐";
+        star.classList.add("active");
+      } else {
+        star.textContent = "★";
+        star.classList.remove("active");
+      }
+    });
+  }
+</script>
 </body>
 </html>
