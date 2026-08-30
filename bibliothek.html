@@ -1296,8 +1296,11 @@
         document.getElementById("editVolume").value =
           selectedBook.volume || "";
 
-        document.getElementById("editCover").value =
+                document.getElementById("editCover").value =
           selectedBook.cover || "";
+
+        document.getElementById("editSpineImageUrl").value =
+          selectedBook.spineImageUrl || "";
 
         document.getElementById("editNotes").value =
           selectedBook.notes || "";
@@ -1485,9 +1488,15 @@
               ).value
             ) || null,
 
-          cover:
+                    cover:
             document
               .getElementById("editCover")
+              .value
+              .trim(),
+
+          spineImageUrl:
+            document
+              .getElementById("editSpineImageUrl")
               .value
               .trim(),
 
