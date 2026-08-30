@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Buch hinzufügen</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f6efe6;
+      color: #3d3028;
+    }
+
+    .app {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 24px 20px 60px;
+    }
+
+    .back {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #6f5544;
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-family: Georgia, serif;
+      font-size: 32px;
+    }
+
+    .subtitle {
+      margin: 0 0 28px;
+      color: #806f62;
+    }
+
+    .form-card {
+      background: #fffaf4;
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 8px 22px rgba(76, 52, 37, 0.08);
+    }
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: 600;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid #dfd0c3;
+      border-radius: 14px;
+      padding: 13px 14px;
+      background: #ffffff;
+      color: #3d3028;
+      font: inherit;
+      font-size: 16px;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .two-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .save-button {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      padding: 15px;
+      background: #b88f6d;
+      color: white;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .save-button:active {
+      transform: scale(0.98);
+    }
+
+    .hint {
+      margin-top: 7px;
+      color: #948275;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+
+    <a class="back" href="index.html">← Zurück zur Startseite</a>
+
+    <h1>Buch hinzufügen</h1>
+    <p class="subtitle">
+      Füge erstmal ein Buch manuell zu deiner Sammlung hinzu.
+    </p>
+
+    <form class="form-card">
+
+      <div class="field">
+        <label for="title">Titel</label>
+        <input id="title" type="text" placeholder="z. B. Fourth Wing">
+      </div>
+
+      <div class="field">
+        <label for="author">Autor/in</label>
+        <input id="author" type="text" placeholder="z. B. Rebecca Yarros">
+      </div>
+
+      <div class="two-columns">
+
+        <div class="field">
+          <label for="language">Sprache</label>
+          <select id="language">
+            <option>Deutsch</option>
+            <option>Englisch</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="pages">Seiten</label>
+          <input id="pages" type="number" placeholder="432">
+        </div>
+
+      </div>
+
+      <div class="two-columns">
+
+        <div class="field">
+          <label for="status">Lesestatus</label>
+          <select id="status">
+            <option>Ungelesen</option>
+            <option>Lese ich gerade</option>
+            <option>Gelesen</option>
+            <option>Abgebrochen</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="rating">Bewertung</label>
+          <select id="rating">
+            <option value="">Keine</option>
+            <option>0.5</option>
+            <option>1</option>
+            <option>1.5</option>
+            <option>2</option>
+            <option>2.5</option>
+            <option>3</option>
+            <option>3.5</option>
+            <option>4</option>
+            <option>4.5</option>
+            <option>5</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="field">
+        <label for="format">Format / Quelle</label>
+        <select id="format">
+          <option>Print</option>
+          <option>Kindle</option>
+          <option>Kindle Unlimited</option>
+          <option>Hörbuch</option>
+        </select>
+      </div>
+
+      <div class="two-columns">
+
+        <div class="field">
+          <label for="series">Reihe</label>
+          <input id="series" type="text" placeholder="z. B. The Empyrean">
+        </div>
+
+        <div class="field">
+          <label for="volume">Band</label>
+          <input id="volume" type="number" placeholder="1">
+        </div>
+
+      </div>
+
+      <div class="field">
+        <label for="cover">Cover-URL</label>
+        <input id="cover" type="url" placeholder="https://...">
+        <div class="hint">
+          Später kommt hier zusätzlich eine richtige Bildauswahl dazu.
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="notes">Persönliche Notizen</label>
+        <textarea id="notes" placeholder="Was möchtest du zu dem Buch festhalten?"></textarea>
+      </div>
+
+      <button class="save-button" type="button">
+        Buch speichern
+      </button>
+
+    </form>
+
+  </main>
+</body>
+</html>
