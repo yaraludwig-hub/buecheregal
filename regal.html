@@ -707,7 +707,37 @@ box-shadow:
         1px
         rgba(255, 255, 255, 0.5);
     }
+.book-spine-ornament {
+  position: absolute;
 
+  left: 6px;
+  right: 6px;
+
+  height: 1px;
+
+  z-index: 4;
+
+  pointer-events: none;
+
+  opacity: 0.72;
+
+  background:
+    currentColor;
+
+  box-shadow:
+    0
+    1px
+    1px
+    rgba(0, 0, 0, 0.25);
+}
+
+.book-spine-ornament.top {
+  top: 7px;
+}
+
+.book-spine-ornament.bottom {
+  bottom: 61px;
+}
     .book-spine-series {
       position: absolute;
 
@@ -2225,7 +2255,10 @@ spine.style.background =
             ".book-spine-author"
           );
 
-
+const ornaments =
+  spine.querySelectorAll(
+    ".book-spine-ornament"
+  );
         if (average > 165) {
 
           if (title) {
@@ -2815,6 +2848,30 @@ coverTexture.src =
             );
 
           }
+          const topOrnament =
+  document.createElement(
+    "div"
+  );
+
+topOrnament.className =
+  "book-spine-ornament top";
+
+spine.appendChild(
+  topOrnament
+);
+
+
+const bottomOrnament =
+  document.createElement(
+    "div"
+  );
+
+bottomOrnament.className =
+  "book-spine-ornament bottom";
+
+spine.appendChild(
+  bottomOrnament
+);
           const title =
             document.createElement(
               "div"
