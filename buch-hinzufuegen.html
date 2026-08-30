@@ -6,189 +6,76 @@
 
   <title>Buch hinzufügen</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f6efe6;
-      color: #3d3028;
-    }
-
-    .app {
-      max-width: 520px;
-      margin: 0 auto;
-      padding: 24px 20px 60px;
-    }
-
-    .back {
-      display: inline-block;
-      margin-bottom: 20px;
-      color: #6f5544;
-      text-decoration: none;
-      font-size: 15px;
-    }
-
-    h1 {
-      margin: 0 0 8px;
-      font-family: Georgia, serif;
-      font-size: 32px;
-    }
-
-    .subtitle {
-      margin: 0 0 28px;
-      color: #806f62;
-    }
-
-    .form-card {
-      background: #fffaf4;
-      border-radius: 24px;
-      padding: 22px;
-      box-shadow: 0 8px 22px rgba(76, 52, 37, 0.08);
-    }
-
-    .field {
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 7px;
-      font-weight: 600;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      border: 1px solid #dfd0c3;
-      border-radius: 14px;
-      padding: 13px 14px;
-      background: #ffffff;
-      color: #3d3028;
-      font: inherit;
-      font-size: 16px;
-    }
-
-    textarea {
-      min-height: 110px;
-      resize: vertical;
-    }
-
-    .two-columns {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .save-button {
-      width: 100%;
-      border: none;
-      border-radius: 16px;
-      padding: 15px;
-      background: #b88f6d;
-      color: white;
-      font-size: 17px;
-      font-weight: 700;
-    }
-
-    .save-button:active {
-      transform: scale(0.98);
-    }
-
-    .hint {
-      margin-top: 7px;
-      color: #948275;
-      font-size: 13px;
-    }
-.star-rating {
-  display: flex;
-  gap: 3px;
-  margin-top: 5px;
-}
-
-.star {
-  position: relative;
-  width: 32px;
-  height: 34px;
-  border: none;
-  background: transparent;
-  padding: 0;
-  font-size: 32px;
-  line-height: 34px;
-  color: #d8c8bb;
-  cursor: pointer;
-}
-
-.star::before {
-  content: "★";
-}
-
-.star.full {
-  color: #b88f6d;
-}
-
-.star.half {
-  color: #d8c8bb;
-}
-
-.star.half::after {
-  content: "★";
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 50%;
-  overflow: hidden;
-  color: #b88f6d;
-  white-space: nowrap;
-}
-
-.rating-text {
-  margin-top: 7px;
-  color: #948275;
-  font-size: 13px;
-}
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+
   <main class="app">
 
-    <a class="back" href="index.html">← Zurück zur Startseite</a>
+    <a class="back" href="index.html">
+      ← Zurück zur Startseite
+    </a>
 
-    <h1>Buch hinzufügen</h1>
-    <p class="subtitle">
-      Füge erstmal ein Buch manuell zu deiner Sammlung hinzu.
-    </p>
+    <header class="page-header">
+      <h1>Buch hinzufügen</h1>
+      <p class="page-subtitle">
+        Füge ein Buch zu deiner Sammlung hinzu.
+      </p>
+    </header>
 
-    <form class="form-card">
+    <form class="card" style="padding: 22px;" id="bookForm">
 
       <div class="field">
         <label for="title">Titel</label>
-        <input id="title" type="text" placeholder="z. B. Fourth Wing">
+
+        <input
+          id="title"
+          type="text"
+          placeholder="z. B. Fourth Wing"
+          required
+        >
       </div>
 
       <div class="field">
         <label for="author">Autor/in</label>
-        <input id="author" type="text" placeholder="z. B. Rebecca Yarros">
+
+        <input
+          id="author"
+          type="text"
+          placeholder="z. B. Rebecca Yarros"
+          required
+        >
       </div>
 
       <div class="two-columns">
 
         <div class="field">
-          <label for="language">Sprache</label>
+
+          <label for="language">
+            Sprache
+          </label>
+
           <select id="language">
             <option>Deutsch</option>
             <option>Englisch</option>
           </select>
+
         </div>
 
         <div class="field">
-          <label for="pages">Seiten</label>
-          <input id="pages" type="number" placeholder="432">
+
+          <label for="pages">
+            Seiten
+          </label>
+
+          <input
+            id="pages"
+            type="number"
+            min="1"
+            placeholder="432"
+          >
+
         </div>
 
       </div>
@@ -196,220 +83,541 @@
       <div class="two-columns">
 
         <div class="field">
-          <label for="status">Lesestatus</label>
+
+          <label for="status">
+            Lesestatus
+          </label>
+
           <select id="status">
             <option>Ungelesen</option>
             <option>Lese ich gerade</option>
             <option>Gelesen</option>
             <option>Abgebrochen</option>
           </select>
+
         </div>
 
-     <div class="field">
-  <label>Bewertung</label>
+        <div class="field">
 
-  <div class="star-rating" id="starRating">
-    <button type="button" class="star" data-value="1"></button>
-<button type="button" class="star" data-value="2"></button>
-<button type="button" class="star" data-value="3"></button>
-<button type="button" class="star" data-value="4"></button>
-<button type="button" class="star" data-value="5"></button>
-  </div>
+          <label for="format">
+            Format / Quelle
+          </label>
 
-  <div class="rating-text" id="ratingText">
-    Keine Bewertung
-  </div>
+          <select id="format">
+            <option>Print</option>
+            <option>Kindle</option>
+            <option>Kindle Unlimited</option>
+            <option>Hörbuch</option>
+          </select>
 
-  <input type="hidden" id="rating" value="">
-</div>
+        </div>
 
       </div>
 
       <div class="field">
-        <label for="format">Format / Quelle</label>
-        <select id="format">
-          <option>Print</option>
-          <option>Kindle</option>
-          <option>Kindle Unlimited</option>
-          <option>Hörbuch</option>
-        </select>
+
+        <label>
+          Bewertung
+        </label>
+
+        <div
+          class="star-rating"
+          id="starRating"
+        >
+
+          <button
+            type="button"
+            class="star"
+            data-value="1"
+            aria-label="1 Stern"
+          ></button>
+
+          <button
+            type="button"
+            class="star"
+            data-value="2"
+            aria-label="2 Sterne"
+          ></button>
+
+          <button
+            type="button"
+            class="star"
+            data-value="3"
+            aria-label="3 Sterne"
+          ></button>
+
+          <button
+            type="button"
+            class="star"
+            data-value="4"
+            aria-label="4 Sterne"
+          ></button>
+
+          <button
+            type="button"
+            class="star"
+            data-value="5"
+            aria-label="5 Sterne"
+          ></button>
+
+        </div>
+
+        <div
+          class="rating-text"
+          id="ratingText"
+        >
+          Keine Bewertung
+        </div>
+
+        <button
+          type="button"
+          class="clear-rating"
+          id="clearRating"
+        >
+          Bewertung entfernen
+        </button>
+
+        <input
+          type="hidden"
+          id="rating"
+          value=""
+        >
+
       </div>
 
       <div class="two-columns">
 
         <div class="field">
-          <label for="series">Reihe</label>
-          <input id="series" type="text" placeholder="z. B. The Empyrean">
+
+          <label for="series">
+            Reihe
+          </label>
+
+          <input
+            id="series"
+            type="text"
+            placeholder="z. B. The Empyrean"
+          >
+
         </div>
 
         <div class="field">
-          <label for="volume">Band</label>
-          <input id="volume" type="number" placeholder="1">
+
+          <label for="volume">
+            Band
+          </label>
+
+          <input
+            id="volume"
+            type="number"
+            min="1"
+            step="1"
+            placeholder="1"
+          >
+
         </div>
 
       </div>
 
       <div class="field">
-        <label for="cover">Cover-URL</label>
-        <input id="cover" type="url" placeholder="https://...">
+
+        <label for="cover">
+          Cover-URL
+        </label>
+
+        <input
+          id="cover"
+          type="url"
+          placeholder="https://..."
+        >
+
         <div class="hint">
-          Später kommt hier zusätzlich eine richtige Bildauswahl dazu.
+          Die automatische Buch- und Coversuche bauen wir als Nächstes ein.
         </div>
+
       </div>
 
       <div class="field">
-        <label for="notes">Persönliche Notizen</label>
-        <textarea id="notes" placeholder="Was möchtest du zu dem Buch festhalten?"></textarea>
+
+        <label for="notes">
+          Persönliche Notizen
+        </label>
+
+        <textarea
+          id="notes"
+          placeholder="Was möchtest du zu diesem Buch festhalten?"
+        ></textarea>
+
       </div>
 
-      <button class="save-button" id="saveButton" type="button">
+      <button
+        class="save-button"
+        id="saveButton"
+        type="submit"
+      >
         Buch speichern
       </button>
 
     </form>
 
   </main>
+
+
   <script>
-  const stars = document.querySelectorAll(".star");
-  const ratingInput = document.getElementById("rating");
-  const ratingText = document.getElementById("ratingText");
 
-  let currentRating = 0;
+    const stars =
+      document.querySelectorAll(".star");
 
-  stars.forEach((star) => {
-    star.addEventListener("click", (event) => {
-      const rect = star.getBoundingClientRect();
-      const clickPosition = event.clientX - rect.left;
-      const starValue = Number(star.dataset.value);
+    const ratingInput =
+      document.getElementById("rating");
 
-      if (clickPosition < rect.width / 2) {
-        currentRating = starValue - 0.5;
-      } else {
-        currentRating = starValue;
-      }
+    const ratingText =
+      document.getElementById("ratingText");
 
-      ratingInput.value = currentRating;
-      ratingText.textContent = currentRating + " von 5 Sternen";
+    let currentRating = 0;
 
-      updateStars();
-    });
-  });
 
-  function updateStars() {
     stars.forEach((star) => {
-      const starValue = Number(star.dataset.value);
 
-      star.classList.remove("full", "half");
+      star.addEventListener(
+        "click",
+        function(event) {
 
-      if (currentRating >= starValue) {
-        star.classList.add("full");
-      } else if (currentRating === starValue - 0.5) {
-        star.classList.add("half");
-      }
-    });
-  }
-</script>
-  <script>
-  const saveButton = document.getElementById("saveButton");
+          const rect =
+            star.getBoundingClientRect();
 
-  function openDatabase() {
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open("buecherregalDB", 1);
+          const clickPosition =
+            event.clientX - rect.left;
 
-      request.onupgradeneeded = function(event) {
-        const db = event.target.result;
+          const starValue =
+            Number(star.dataset.value);
 
-        if (!db.objectStoreNames.contains("books")) {
-          db.createObjectStore("books", {
-            keyPath: "id"
-          });
+
+          if (
+            clickPosition <
+            rect.width / 2
+          ) {
+
+            currentRating =
+              starValue - 0.5;
+
+          } else {
+
+            currentRating =
+              starValue;
+
+          }
+
+
+          updateStars();
+
         }
-      };
+      );
 
-      request.onsuccess = function(event) {
-        resolve(event.target.result);
-      };
-
-      request.onerror = function() {
-        reject("Die Datenbank konnte nicht geöffnet werden.");
-      };
     });
-  }
 
-  saveButton.addEventListener("click", async function() {
 
-    const title = document.getElementById("title").value.trim();
-    const author = document.getElementById("author").value.trim();
+    function updateStars() {
 
-    if (title === "") {
-      alert("Bitte gib einen Buchtitel ein.");
-      return;
+      ratingInput.value =
+        currentRating || "";
+
+
+      ratingText.textContent =
+        currentRating
+          ? currentRating +
+            " von 5 Sternen"
+          : "Keine Bewertung";
+
+
+      stars.forEach((star) => {
+
+        const starValue =
+          Number(star.dataset.value);
+
+
+        star.classList.remove(
+          "full",
+          "half"
+        );
+
+
+        if (
+          currentRating >=
+          starValue
+        ) {
+
+          star.classList.add(
+            "full"
+          );
+
+        } else if (
+          currentRating ===
+          starValue - 0.5
+        ) {
+
+          star.classList.add(
+            "half"
+          );
+
+        }
+
+      });
+
     }
 
-    if (author === "") {
-      alert("Bitte gib eine Autorin oder einen Autor ein.");
-      return;
+
+    document
+      .getElementById("clearRating")
+      .addEventListener(
+        "click",
+        function() {
+
+          currentRating = 0;
+
+          updateStars();
+
+        }
+      );
+
+
+    function openDatabase() {
+
+      return new Promise(
+        (resolve, reject) => {
+
+          const request =
+            indexedDB.open(
+              "buecherregalDB",
+              1
+            );
+
+
+          request.onupgradeneeded =
+            function(event) {
+
+              const db =
+                event.target.result;
+
+
+              if (
+                !db.objectStoreNames
+                  .contains("books")
+              ) {
+
+                db.createObjectStore(
+                  "books",
+                  {
+                    keyPath: "id"
+                  }
+                );
+
+              }
+
+            };
+
+
+          request.onsuccess =
+            function(event) {
+
+              resolve(
+                event.target.result
+              );
+
+            };
+
+
+          request.onerror =
+            function() {
+
+              reject(
+                new Error(
+                  "Die Datenbank konnte nicht geöffnet werden."
+                )
+              );
+
+            };
+
+        }
+      );
+
     }
 
-    const book = {
-      id: crypto.randomUUID(),
 
-      title: title,
-      author: author,
+    document
+      .getElementById("bookForm")
+      .addEventListener(
+        "submit",
+        async function(event) {
 
-      language: document.getElementById("language").value,
+          event.preventDefault();
 
-      pages:
-        Number(document.getElementById("pages").value) || null,
 
-      status:
-        document.getElementById("status").value,
+          const title =
+            document
+              .getElementById("title")
+              .value
+              .trim();
 
-      rating:
-        Number(document.getElementById("rating").value) || null,
+          const author =
+            document
+              .getElementById("author")
+              .value
+              .trim();
 
-      format:
-        document.getElementById("format").value,
 
-      series:
-        document.getElementById("series").value.trim(),
+          if (!title) {
 
-      volume:
-        Number(document.getElementById("volume").value) || null,
+            alert(
+              "Bitte gib einen Buchtitel ein."
+            );
 
-      cover:
-        document.getElementById("cover").value.trim(),
+            return;
 
-      notes:
-        document.getElementById("notes").value.trim(),
+          }
 
-      createdAt:
-        new Date().toISOString()
-    };
 
-    try {
-      const db = await openDatabase();
+          if (!author) {
 
-      const transaction =
-        db.transaction("books", "readwrite");
+            alert(
+              "Bitte gib eine Autorin oder einen Autor ein."
+            );
 
-      const store =
-        transaction.objectStore("books");
+            return;
 
-      store.add(book);
+          }
 
-      transaction.oncomplete = function() {
-        alert("Buch wurde gespeichert.");
-      };
 
-      transaction.onerror = function() {
-        alert("Beim Speichern ist etwas schiefgelaufen.");
-      };
+          const book = {
 
-    } catch (error) {
-      alert(error);
-    }
-  });
-</script>
+            id:
+              crypto.randomUUID(),
+
+            title: title,
+
+            author: author,
+
+            language:
+              document.getElementById(
+                "language"
+              ).value,
+
+            pages:
+              Number(
+                document.getElementById(
+                  "pages"
+                ).value
+              ) || null,
+
+            status:
+              document.getElementById(
+                "status"
+              ).value,
+
+            rating:
+              currentRating || null,
+
+            format:
+              document.getElementById(
+                "format"
+              ).value,
+
+            series:
+              document
+                .getElementById(
+                  "series"
+                )
+                .value
+                .trim(),
+
+            volume:
+              Number(
+                document.getElementById(
+                  "volume"
+                ).value
+              ) || null,
+
+            cover:
+              document
+                .getElementById(
+                  "cover"
+                )
+                .value
+                .trim(),
+
+            notes:
+              document
+                .getElementById(
+                  "notes"
+                )
+                .value
+                .trim(),
+
+            createdAt:
+              new Date()
+                .toISOString()
+
+          };
+
+
+          try {
+
+            const db =
+              await openDatabase();
+
+            const transaction =
+              db.transaction(
+                "books",
+                "readwrite"
+              );
+
+            const store =
+              transaction
+                .objectStore(
+                  "books"
+                );
+
+            store.add(book);
+
+
+            transaction.oncomplete =
+              function() {
+
+                alert(
+                  "Buch wurde gespeichert."
+                );
+
+
+                window.location.href =
+                  "bibliothek.html";
+
+              };
+
+
+            transaction.onerror =
+              function() {
+
+                alert(
+                  "Beim Speichern ist etwas schiefgelaufen."
+                );
+
+              };
+
+
+          } catch (error) {
+
+            console.error(error);
+
+            alert(
+              "Das Buch konnte nicht gespeichert werden."
+            );
+
+          }
+
+        }
+      );
+
+  </script>
+
 </body>
 </html>
