@@ -14,315 +14,525 @@ export default {
       });
     }
 
+    if (request.method !== "GET") {
+      return jsonResponse(
+        {
+          error: "Nur GET-Anfragen sind erlaubt."
+        },
+        405,
+        corsHeaders
+      );
+    }
+
     try {
       const requestUrl = new URL(request.url);
       const query = requestUrl.searchParams.get("q");
 
       if (!query || !query.trim()) {
-        return new Response(
-          JSON.stringify({
-            error: "Bitte einen Suchbegriff mit ?q= angeben."
-          }),
+        return jsonResponse(
           {
-            status: 400,
-            headers: corsHeaders
-          }
+            error: "Bitte einen Suchbegriff mit ?q= angeben."
+          },
+          400,
+          corsHeaders
         );
       }
 
       const cleanQuery = query.trim();
 
-      // 1. Zuerst Google Books versuchen
-      const googleUrl =
-        "https://www.googleapis.com/books/v1/volumes" +
-        "?q=" +
-        encodeURIComponent(cleanQuery) +
-        "&maxResults=20" +
-        "&printType=books";
+      /*
+        1. Werke bei Open Library suchen
+      */
 
-      const googleResponse = await fetch(googleUrl);
-
-      if (googleResponse.ok) {
-        const googleData = await googleResponse.json();
-
-        return new Response(
-          JSON.stringify(googleData),
-          {
-            status: 200,
-            headers: corsHeaders
-          }
-        );
-      }
-
-      // 2. Falls Google blockiert: Open Library
-      const openLibraryUrl =
+      const searchUrl =
         "https://openlibrary.org/search.json" +
         "?q=" +
         encodeURIComponent(cleanQuery) +
-        "&limit=12";
+        "&limit=10";
 
-      const openLibraryResponse =
-        await fetch(openLibraryUrl);
+      const searchResponse = await fetch(searchUrl, {
+        headers: {
+          "User-Agent": "Buecherregal-App/1.0"
+        }
+      });
 
-      if (!openLibraryResponse.ok) {
+      if (!searchResponse.ok) {
         throw new Error(
-          "Open Library konnte nicht geladen werden."
+          "Open-Library-Suche antwortete mit Status " +
+          searchResponse.status
         );
       }
 
-      const openLibraryData =
-        await openLibraryResponse.json();
+      const searchData = await searchResponse.json();
 
-      const docs =
-        Array.isArray(openLibraryData.docs)
-          ? openLibraryData.docs
-          : [];
+      const docs = Array.isArray(searchData.docs)
+        ? searchData.docs
+        : [];
 
-      const items = await Promise.all(
-        docs.map(async (book, index) => {
-          let editionData = null;
+      if (docs.length === 0) {
+        return jsonResponse(
+          {
+            kind: "books#volumes",
+            totalItems: 0,
+            items: []
+          },
+          200,
+          corsHeaders
+        );
+      }
 
-          // Wenn möglich konkrete Edition nachladen
-          if (
-            Array.isArray(book.edition_key) &&
-            book.edition_key.length > 0
-          ) {
-            const editionKey =
-              book.edition_key[0];
+      /*
+        2. Für die wichtigsten Treffer konkrete Editionen laden
+      */
 
-            try {
-              const editionResponse =
-                await fetch(
-                  "https://openlibrary.org/books/" +
-                  editionKey +
-                  ".json"
-                );
+      const results = [];
 
-              if (editionResponse.ok) {
-                editionData =
-                  await editionResponse.json();
+      for (const book of docs.slice(0, 10)) {
+        const workKey = book.key;
+
+        let editions = [];
+
+        if (
+          typeof workKey === "string" &&
+          workKey.startsWith("/works/")
+        ) {
+          try {
+            const editionsUrl =
+              "https://openlibrary.org" +
+              workKey +
+              "/editions.json?limit=30";
+
+            const editionsResponse = await fetch(editionsUrl, {
+              headers: {
+                "User-Agent": "Buecherregal-App/1.0"
               }
-            } catch {
-              editionData = null;
+            });
+
+            if (editionsResponse.ok) {
+              const editionsData =
+                await editionsResponse.json();
+
+              editions =
+                Array.isArray(editionsData.entries)
+                  ? editionsData.entries
+                  : [];
             }
+          } catch (error) {
+            editions = [];
           }
-
-          const searchIsbn =
-            Array.isArray(book.isbn)
-              ? book.isbn
-              : [];
-
-          const editionIsbn13 =
-            editionData &&
-            Array.isArray(editionData.isbn_13)
-              ? editionData.isbn_13
-              : [];
-
-          const editionIsbn10 =
-            editionData &&
-            Array.isArray(editionData.isbn_10)
-              ? editionData.isbn_10
-              : [];
-
-          const isbn13 =
-            editionIsbn13[0] ||
-            searchIsbn.find(
-              value =>
-                String(value).length === 13
-            ) ||
-            "";
-
-          const isbn10 =
-            editionIsbn10[0] ||
-            searchIsbn.find(
-              value =>
-                String(value).length === 10
-            ) ||
-            "";
-
-          const pages =
-            editionData &&
-            typeof editionData.number_of_pages === "number"
-              ? editionData.number_of_pages
-              : (
-                  typeof book.number_of_pages_median === "number"
-                    ? book.number_of_pages_median
-                    : null
-                );
-
-          let coverId = null;
-
-          if (
-            editionData &&
-            Array.isArray(editionData.covers) &&
-            editionData.covers.length > 0
-          ) {
-            coverId =
-              editionData.covers[0];
-          } else if (book.cover_i) {
-            coverId =
-              book.cover_i;
-          }
-
-          const coverUrl =
-            coverId
-              ? "https://covers.openlibrary.org/b/id/" +
-                coverId +
-                "-L.jpg"
-              : "";
-
-          let publishedDate = "";
-
-          if (
-            editionData &&
-            editionData.publish_date
-          ) {
-            publishedDate =
-              String(
-                editionData.publish_date
-              );
-          } else if (
-            book.first_publish_year
-          ) {
-            publishedDate =
-              String(
-                book.first_publish_year
-              );
-          }
-
-          let language = "";
-
-          if (
-            editionData &&
-            Array.isArray(editionData.languages) &&
-            editionData.languages.length > 0 &&
-            editionData.languages[0].key
-          ) {
-            language =
-              editionData.languages[0].key
-                .replace(
-                  "/languages/",
-                  ""
-                );
-          } else if (
-            Array.isArray(book.language) &&
-            book.language.length > 0
-          ) {
-            language =
-              book.language[0];
-          }
-
-          const publisher =
-            editionData &&
-            Array.isArray(editionData.publishers) &&
-            editionData.publishers.length > 0
-              ? editionData.publishers[0]
-              : (
-                  Array.isArray(book.publisher)
-                    ? book.publisher[0] || ""
-                    : ""
-                );
-
-          return {
-            id:
-              (
-                editionData &&
-                editionData.key
-              ) ||
-              book.key ||
-              "openlibrary-" + index,
-
-            volumeInfo: {
-              title:
-                (
-                  editionData &&
-                  editionData.title
-                ) ||
-                book.title ||
-                "",
-
-              subtitle:
-                (
-                  editionData &&
-                  editionData.subtitle
-                ) ||
-                "",
-
-              authors:
-                Array.isArray(book.author_name)
-                  ? book.author_name
-                  : [],
-
-              publisher:
-                publisher,
-
-              publishedDate:
-                publishedDate,
-
-              pageCount:
-                pages,
-
-              language:
-                language,
-
-              categories:
-                Array.isArray(book.subject)
-                  ? book.subject.slice(0, 1)
-                  : [],
-
-              industryIdentifiers: [
-                ...(isbn13
-                  ? [{
-                      type: "ISBN_13",
-                      identifier: isbn13
-                    }]
-                  : []),
-
-                ...(isbn10
-                  ? [{
-                      type: "ISBN_10",
-                      identifier: isbn10
-                    }]
-                  : [])
-              ],
-
-              imageLinks:
-                coverUrl
-                  ? {
-                      thumbnail: coverUrl,
-                      smallThumbnail: coverUrl,
-                      medium: coverUrl,
-                      large: coverUrl
-                    }
-                  : {}
-            }
-          };
-        })
-      );
-
-      return new Response(
-        JSON.stringify({
-          kind: "books#volumes",
-          totalItems: items.length,
-          items: items
-        }),
-        {
-          status: 200,
-          headers: corsHeaders
         }
+
+        /*
+          3. Beste Edition auswählen
+
+          Besonders wichtig:
+          - ISBN
+          - Seitenzahl
+          - Cover
+          - Sprache
+          - Verlag
+        */
+
+        let bestEdition = null;
+        let bestScore = -1;
+
+        for (const edition of editions) {
+          const score =
+            scoreEdition(edition);
+
+          if (score > bestScore) {
+            bestScore = score;
+            bestEdition = edition;
+          }
+        }
+
+        const converted =
+          convertToGoogleFormat(
+            book,
+            bestEdition,
+            results.length
+          );
+
+        results.push(converted);
+      }
+
+      return jsonResponse(
+        {
+          kind: "books#volumes",
+          totalItems: results.length,
+          items: results
+        },
+        200,
+        corsHeaders
       );
 
     } catch (error) {
-      return new Response(
-        JSON.stringify({
-          error: "Die Buchsuche konnte nicht geladen werden.",
-          details: error.message
-        }),
+      return jsonResponse(
         {
-          status: 500,
-          headers: corsHeaders
-        }
+          error:
+            "Die Buchsuche konnte nicht geladen werden.",
+          details:
+            error instanceof Error
+              ? error.message
+              : String(error)
+        },
+        500,
+        corsHeaders
       );
     }
   }
 };
+
+
+/*
+  Bewertet eine konkrete Buchausgabe.
+
+  Je vollständiger die Ausgabe,
+  desto höher die Punktzahl.
+*/
+
+function scoreEdition(edition) {
+  let score = 0;
+
+  if (
+    Array.isArray(edition.isbn_13) &&
+    edition.isbn_13.length > 0
+  ) {
+    score += 10;
+  }
+
+  if (
+    Array.isArray(edition.isbn_10) &&
+    edition.isbn_10.length > 0
+  ) {
+    score += 5;
+  }
+
+  if (
+    typeof edition.number_of_pages === "number" &&
+    edition.number_of_pages > 0
+  ) {
+    score += 10;
+  }
+
+  if (
+    Array.isArray(edition.covers) &&
+    edition.covers.length > 0
+  ) {
+    score += 8;
+  }
+
+  if (
+    Array.isArray(edition.languages) &&
+    edition.languages.length > 0
+  ) {
+    score += 3;
+  }
+
+  if (
+    Array.isArray(edition.publishers) &&
+    edition.publishers.length > 0
+  ) {
+    score += 2;
+  }
+
+  if (edition.publish_date) {
+    score += 2;
+  }
+
+  return score;
+}
+
+
+/*
+  Open-Library-Daten in dasselbe Format umwandeln,
+  das unsere App bereits von Google Books erwartet.
+*/
+
+function convertToGoogleFormat(
+  book,
+  edition,
+  index
+) {
+  const isbn13 =
+    edition &&
+    Array.isArray(edition.isbn_13)
+      ? edition.isbn_13[0] || ""
+      : findIsbn(book.isbn, 13);
+
+  const isbn10 =
+    edition &&
+    Array.isArray(edition.isbn_10)
+      ? edition.isbn_10[0] || ""
+      : findIsbn(book.isbn, 10);
+
+
+  /*
+    Seitenzahl
+  */
+
+  let pages = null;
+
+  if (
+    edition &&
+    typeof edition.number_of_pages === "number"
+  ) {
+    pages =
+      edition.number_of_pages;
+  } else if (
+    typeof book.number_of_pages_median === "number"
+  ) {
+    pages =
+      book.number_of_pages_median;
+  }
+
+
+  /*
+    Sprache
+  */
+
+  let language = "";
+
+  if (
+    edition &&
+    Array.isArray(edition.languages) &&
+    edition.languages.length > 0
+  ) {
+    const languageEntry =
+      edition.languages[0];
+
+    if (
+      languageEntry &&
+      typeof languageEntry.key === "string"
+    ) {
+      language =
+        languageEntry.key.replace(
+          "/languages/",
+          ""
+        );
+    }
+  }
+
+  if (
+    !language &&
+    Array.isArray(book.language) &&
+    book.language.length > 0
+  ) {
+    language =
+      book.language[0];
+  }
+
+
+  /*
+    Cover
+  */
+
+  let coverId = null;
+
+  if (
+    edition &&
+    Array.isArray(edition.covers) &&
+    edition.covers.length > 0
+  ) {
+    coverId =
+      edition.covers[0];
+  } else if (book.cover_i) {
+    coverId =
+      book.cover_i;
+  }
+
+  const coverUrl =
+    coverId
+      ? "https://covers.openlibrary.org/b/id/" +
+        coverId +
+        "-L.jpg"
+      : "";
+
+
+  /*
+    Erscheinungsdatum
+  */
+
+  let publishedDate = "";
+
+  if (
+    edition &&
+    edition.publish_date
+  ) {
+    publishedDate =
+      String(edition.publish_date);
+  } else if (
+    book.first_publish_year
+  ) {
+    publishedDate =
+      String(book.first_publish_year);
+  }
+
+
+  /*
+    Verlag
+  */
+
+  let publisher = "";
+
+  if (
+    edition &&
+    Array.isArray(edition.publishers) &&
+    edition.publishers.length > 0
+  ) {
+    publisher =
+      edition.publishers[0];
+  } else if (
+    Array.isArray(book.publisher) &&
+    book.publisher.length > 0
+  ) {
+    publisher =
+      book.publisher[0];
+  }
+
+
+  /*
+    Titel
+  */
+
+  const title =
+    edition &&
+    edition.title
+      ? edition.title
+      : book.title || "";
+
+
+  /*
+    Untertitel
+  */
+
+  const subtitle =
+    edition &&
+    edition.subtitle
+      ? edition.subtitle
+      : "";
+
+
+  return {
+    id:
+      edition &&
+      edition.key
+        ? edition.key
+        : book.key ||
+          "openlibrary-" + index,
+
+    volumeInfo: {
+      title: title,
+
+      subtitle: subtitle,
+
+      authors:
+        Array.isArray(book.author_name)
+          ? book.author_name
+          : [],
+
+      publisher: publisher,
+
+      publishedDate:
+        publishedDate,
+
+      pageCount:
+        pages,
+
+      language:
+        language,
+
+      categories:
+        Array.isArray(book.subject)
+          ? book.subject.slice(0, 1)
+          : [],
+
+      industryIdentifiers: [
+        ...(isbn13
+          ? [
+              {
+                type: "ISBN_13",
+                identifier: isbn13
+              }
+            ]
+          : []),
+
+        ...(isbn10
+          ? [
+              {
+                type: "ISBN_10",
+                identifier: isbn10
+              }
+            ]
+          : [])
+      ],
+
+      imageLinks:
+        coverUrl
+          ? {
+              smallThumbnail:
+                coverUrl,
+
+              thumbnail:
+                coverUrl,
+
+              small:
+                coverUrl,
+
+              medium:
+                coverUrl,
+
+              large:
+                coverUrl,
+
+              extraLarge:
+                coverUrl
+            }
+          : {}
+    }
+  };
+}
+
+
+/*
+  ISBN aus dem normalen Suchergebnis holen,
+  falls die Edition keine enthält.
+*/
+
+function findIsbn(isbns, length) {
+  if (!Array.isArray(isbns)) {
+    return "";
+  }
+
+  const result =
+    isbns.find(value => {
+      const cleaned =
+        String(value).replace(
+          /[^0-9X]/gi,
+          ""
+        );
+
+      return cleaned.length === length;
+    });
+
+  return result || "";
+}
+
+
+/*
+  Einheitliche JSON-Antwort
+*/
+
+function jsonResponse(
+  data,
+  status,
+  headers
+) {
+  return new Response(
+    JSON.stringify(data),
+    {
+      status: status,
+      headers: headers
+    }
+  );
+}
