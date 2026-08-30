@@ -2226,34 +2226,121 @@ spine.style.background =
           );
 
 
-        if (average > 150) {
+                const warmth =
+          averageRed -
+          averageBlue;
 
-          if (title) {
-            title.style.color =
-              "#2f241f";
+        const coolness =
+          averageBlue -
+          averageRed;
 
-            title.style.textShadow =
-              "0 1px 1px rgba(255,255,255,0.45)";
-          }
 
-          if (author) {
-            author.style.color =
-              "#3d3028";
+        /*
+          Automatische Prägungsfarbe:
 
-            author.style.textShadow =
-              "0 1px 1px rgba(255,255,255,0.38)";
-          }
+          helle Rücken  -> dunkle Prägung
+          warme dunkle Rücken -> Gold
+          kühle dunkle Rücken -> Silber
+          neutrale dunkle Rücken -> Creme
+        */
+
+        let titleColor;
+        let authorColor;
+        let titleShadow;
+        let authorShadow;
+
+
+        if (average > 165) {
+
+          titleColor =
+            "#403027";
+
+          authorColor =
+            "#57453a";
+
+          titleShadow =
+            "0 1px 1px rgba(255,255,255,0.38)";
+
+          authorShadow =
+            "0 1px 1px rgba(255,255,255,0.28)";
+
+        } else if (warmth > 12) {
+
+          /*
+            Gold
+          */
+
+          titleColor =
+            "#e7c47a";
+
+          authorColor =
+            "#f0dfb8";
+
+          titleShadow =
+            "0 1px 2px rgba(45,25,8,0.9), 0 0 3px rgba(231,196,122,0.28)";
+
+          authorShadow =
+            "0 1px 2px rgba(45,25,8,0.85)";
+
+        } else if (coolness > 10) {
+
+          /*
+            Silber
+          */
+
+          titleColor =
+            "#d9dce2";
+
+          authorColor =
+            "#eceef2";
+
+          titleShadow =
+            "0 1px 2px rgba(15,20,30,0.9), 0 0 3px rgba(220,225,235,0.25)";
+
+          authorShadow =
+            "0 1px 2px rgba(15,20,30,0.85)";
 
         } else {
 
-          if (title) {
-            title.style.color =
-              "rgba(255,255,255,0.96)";
+          /*
+            Creme
+          */
 
-            title.style.textShadow =
-              "0 1px 2px rgba(0,0,0,0.85)";
-          }
+          titleColor =
+            "#eee0c9";
 
+          authorColor =
+            "#f4eadb";
+
+          titleShadow =
+            "0 1px 2px rgba(25,15,10,0.9)";
+
+          authorShadow =
+            "0 1px 2px rgba(25,15,10,0.85)";
+
+        }
+
+
+        if (title) {
+
+          title.style.color =
+            titleColor;
+
+          title.style.textShadow =
+            titleShadow;
+
+        }
+
+
+        if (author) {
+
+          author.style.color =
+            authorColor;
+
+          author.style.textShadow =
+            authorShadow;
+
+        }
           if (author) {
             author.style.color =
               "rgba(255,255,255,0.92)";
