@@ -2605,16 +2605,19 @@
             book.cover
           ) {
 
-            const coverTexture =
-              document.createElement(
-                "img"
-              );
+          const coverTexture =
+  document.createElement(
+    "img"
+  );
 
-            coverTexture.className =
-              "book-spine-cover-texture";
+coverTexture.className =
+  "book-spine-cover-texture";
 
-            coverTexture.src =
-              book.cover;
+coverTexture.crossOrigin =
+  "anonymous";
+
+coverTexture.src =
+  book.cover;
 
             coverTexture.alt =
               "";
