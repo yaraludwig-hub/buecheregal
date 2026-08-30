@@ -2276,6 +2276,12 @@ const ornaments =
             author.style.textShadow =
               "0 1px 1px rgba(255,255,255,0.38)";
           }
+          ornaments.forEach(
+  ornament => {
+    ornament.style.color =
+      "#57453a";
+  }
+);
 
         } else {
 
@@ -2303,6 +2309,16 @@ const ornaments =
               "0 1px 2px rgba(0,0,0,0.85)";
           }
 
+          ornaments.forEach(
+  ornament => {
+    ornament.style.color =
+      averageRed > averageBlue + 12
+        ? "#e7c47a"
+        : averageBlue > averageRed + 10
+          ? "#d9dce2"
+          : "#eee0c9";
+  }
+);
         }
       } catch (error) {
 
