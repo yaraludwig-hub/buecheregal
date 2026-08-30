@@ -1996,7 +1996,143 @@
 
     }
 
+    function applyCoverTextContrast(
+      image,
+      spine
+    ) {
 
+      try {
+
+        const canvas =
+          document.createElement(
+            "canvas"
+          );
+
+        const context =
+          canvas.getContext(
+            "2d",
+            {
+              willReadFrequently: true
+            }
+          );
+
+        if (!context) {
+          return;
+        }
+
+
+        canvas.width = 24;
+        canvas.height = 60;
+
+
+        context.drawImage(
+          image,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+
+        const imageData =
+          context.getImageData(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          ).data;
+
+
+        let totalLuminance = 0;
+        let count = 0;
+
+
+        for (
+          let i = 0;
+          i < imageData.length;
+          i += 16
+        ) {
+
+          const r = imageData[i];
+          const g = imageData[i + 1];
+          const b = imageData[i + 2];
+
+          const luminance =
+            (0.2126 * r) +
+            (0.7152 * g) +
+            (0.0722 * b);
+
+          totalLuminance += luminance;
+          count += 1;
+
+        }
+
+
+        const average =
+          count
+            ? totalLuminance / count
+            : 128;
+
+
+        const title =
+          spine.querySelector(
+            ".book-spine-title"
+          );
+
+        const author =
+          spine.querySelector(
+            ".book-spine-author"
+          );
+
+
+        if (average > 150) {
+
+          if (title) {
+            title.style.color =
+              "#2f241f";
+
+            title.style.textShadow =
+              "0 1px 1px rgba(255,255,255,0.45)";
+          }
+
+          if (author) {
+            author.style.color =
+              "#3d3028";
+
+            author.style.textShadow =
+              "0 1px 1px rgba(255,255,255,0.38)";
+          }
+
+        } else {
+
+          if (title) {
+            title.style.color =
+              "rgba(255,255,255,0.96)";
+
+            title.style.textShadow =
+              "0 1px 2px rgba(0,0,0,0.85)";
+          }
+
+          if (author) {
+            author.style.color =
+              "rgba(255,255,255,0.92)";
+
+            author.style.textShadow =
+              "0 1px 2px rgba(0,0,0,0.85)";
+          }
+
+        }
+
+      } catch (error) {
+
+        console.warn(
+          "Coverfarbe konnte nicht analysiert werden:",
+          error
+        );
+
+      }
+
+    }
     /* =========================================================
        SORTIERUNG
        ========================================================= */
@@ -2486,10 +2622,22 @@
             coverTexture.loading =
               "lazy";
 
-            coverTexture.onerror =
+                        coverTexture.onerror =
               () => {
                 coverTexture.remove();
               };
+
+
+            coverTexture.onload =
+              () => {
+
+                applyCoverTextContrast(
+                  coverTexture,
+                  spine
+                );
+
+              };
+
 
             spine.appendChild(
               coverTexture
