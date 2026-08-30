@@ -54,60 +54,199 @@ export default {
         );
       }
 
-      // 2. Falls Google blockiert: Open Library verwenden
+      // 2. Falls Google blockiert: Open Library
       const openLibraryUrl =
         "https://openlibrary.org/search.json" +
         "?q=" +
         encodeURIComponent(cleanQuery) +
-        "&limit=20";
+        "&limit=12";
 
       const openLibraryResponse =
         await fetch(openLibraryUrl);
 
       if (!openLibraryResponse.ok) {
         throw new Error(
-          "Auch Open Library konnte nicht geladen werden."
+          "Open Library konnte nicht geladen werden."
         );
       }
 
       const openLibraryData =
         await openLibraryResponse.json();
 
-      const items =
-        (openLibraryData.docs || []).map((book, index) => {
+      const docs =
+        Array.isArray(openLibraryData.docs)
+          ? openLibraryData.docs
+          : [];
 
-          const isbn =
+      const items = await Promise.all(
+        docs.map(async (book, index) => {
+          let editionData = null;
+
+          // Wenn möglich konkrete Edition nachladen
+          if (
+            Array.isArray(book.edition_key) &&
+            book.edition_key.length > 0
+          ) {
+            const editionKey =
+              book.edition_key[0];
+
+            try {
+              const editionResponse =
+                await fetch(
+                  "https://openlibrary.org/books/" +
+                  editionKey +
+                  ".json"
+                );
+
+              if (editionResponse.ok) {
+                editionData =
+                  await editionResponse.json();
+              }
+            } catch {
+              editionData = null;
+            }
+          }
+
+          const searchIsbn =
             Array.isArray(book.isbn)
               ? book.isbn
               : [];
 
+          const editionIsbn13 =
+            editionData &&
+            Array.isArray(editionData.isbn_13)
+              ? editionData.isbn_13
+              : [];
+
+          const editionIsbn10 =
+            editionData &&
+            Array.isArray(editionData.isbn_10)
+              ? editionData.isbn_10
+              : [];
+
           const isbn13 =
-            isbn.find(value =>
-              String(value).length === 13
-            ) || "";
+            editionIsbn13[0] ||
+            searchIsbn.find(
+              value =>
+                String(value).length === 13
+            ) ||
+            "";
 
           const isbn10 =
-            isbn.find(value =>
-              String(value).length === 10
-            ) || "";
+            editionIsbn10[0] ||
+            searchIsbn.find(
+              value =>
+                String(value).length === 10
+            ) ||
+            "";
 
-          let coverUrl = "";
+          const pages =
+            editionData &&
+            typeof editionData.number_of_pages === "number"
+              ? editionData.number_of_pages
+              : (
+                  typeof book.number_of_pages_median === "number"
+                    ? book.number_of_pages_median
+                    : null
+                );
 
-          if (book.cover_i) {
-            coverUrl =
-              "https://covers.openlibrary.org/b/id/" +
-              book.cover_i +
-              "-L.jpg";
+          let coverId = null;
+
+          if (
+            editionData &&
+            Array.isArray(editionData.covers) &&
+            editionData.covers.length > 0
+          ) {
+            coverId =
+              editionData.covers[0];
+          } else if (book.cover_i) {
+            coverId =
+              book.cover_i;
           }
+
+          const coverUrl =
+            coverId
+              ? "https://covers.openlibrary.org/b/id/" +
+                coverId +
+                "-L.jpg"
+              : "";
+
+          let publishedDate = "";
+
+          if (
+            editionData &&
+            editionData.publish_date
+          ) {
+            publishedDate =
+              String(
+                editionData.publish_date
+              );
+          } else if (
+            book.first_publish_year
+          ) {
+            publishedDate =
+              String(
+                book.first_publish_year
+              );
+          }
+
+          let language = "";
+
+          if (
+            editionData &&
+            Array.isArray(editionData.languages) &&
+            editionData.languages.length > 0 &&
+            editionData.languages[0].key
+          ) {
+            language =
+              editionData.languages[0].key
+                .replace(
+                  "/languages/",
+                  ""
+                );
+          } else if (
+            Array.isArray(book.language) &&
+            book.language.length > 0
+          ) {
+            language =
+              book.language[0];
+          }
+
+          const publisher =
+            editionData &&
+            Array.isArray(editionData.publishers) &&
+            editionData.publishers.length > 0
+              ? editionData.publishers[0]
+              : (
+                  Array.isArray(book.publisher)
+                    ? book.publisher[0] || ""
+                    : ""
+                );
 
           return {
             id:
+              (
+                editionData &&
+                editionData.key
+              ) ||
               book.key ||
               "openlibrary-" + index,
 
             volumeInfo: {
               title:
-                book.title || "",
+                (
+                  editionData &&
+                  editionData.title
+                ) ||
+                book.title ||
+                "",
+
+              subtitle:
+                (
+                  editionData &&
+                  editionData.subtitle
+                ) ||
+                "",
 
               authors:
                 Array.isArray(book.author_name)
@@ -115,22 +254,16 @@ export default {
                   : [],
 
               publisher:
-                Array.isArray(book.publisher)
-                  ? book.publisher[0] || ""
-                  : "",
+                publisher,
 
               publishedDate:
-                book.first_publish_year
-                  ? String(book.first_publish_year)
-                  : "",
+                publishedDate,
 
               pageCount:
-                book.number_of_pages_median || null,
+                pages,
 
               language:
-                Array.isArray(book.language)
-                  ? book.language[0] || ""
-                  : "",
+                language,
 
               categories:
                 Array.isArray(book.subject)
@@ -164,7 +297,8 @@ export default {
                   : {}
             }
           };
-        });
+        })
+      );
 
       return new Response(
         JSON.stringify({
