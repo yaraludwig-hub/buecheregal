@@ -2226,7 +2226,7 @@ spine.style.background =
           );
 
 
-        if (average > 150) {
+        if (average > 165) {
 
           if (title) {
             title.style.color =
@@ -2248,7 +2248,11 @@ spine.style.background =
 
           if (title) {
             title.style.color =
-              "rgba(255,255,255,0.96)";
+              averageRed > averageBlue + 12
+  ? "#e7c47a"
+  : averageBlue > averageRed + 10
+    ? "#d9dce2"
+    : "#eee0c9"
 
             title.style.textShadow =
               "0 1px 2px rgba(0,0,0,0.85)";
@@ -2256,7 +2260,11 @@ spine.style.background =
 
           if (author) {
             author.style.color =
-              "rgba(255,255,255,0.92)";
+  averageRed > averageBlue + 12
+    ? "#f0dfb8"
+    : averageBlue > averageRed + 10
+      ? "#eceef2"
+      : "#f4eadb";
 
             author.style.textShadow =
               "0 1px 2px rgba(0,0,0,0.85)";
