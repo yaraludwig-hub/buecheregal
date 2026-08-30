@@ -104,24 +104,46 @@
       color: #948275;
       font-size: 13px;
     }
-    .star-rating {
+.star-rating {
   display: flex;
-  gap: 4px;
-  margin-top: 4px;
+  gap: 3px;
+  margin-top: 5px;
 }
 
 .star {
+  position: relative;
+  width: 32px;
+  height: 34px;
   border: none;
   background: transparent;
   padding: 0;
-  font-size: 34px;
-  line-height: 1;
+  font-size: 32px;
+  line-height: 34px;
   color: #d8c8bb;
   cursor: pointer;
 }
 
-.star.active {
+.star::before {
+  content: "★";
+}
+
+.star.full {
   color: #b88f6d;
+}
+
+.star.half {
+  color: #d8c8bb;
+}
+
+.star.half::after {
+  content: "★";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%;
+  overflow: hidden;
+  color: #b88f6d;
+  white-space: nowrap;
 }
 
 .rating-text {
@@ -187,11 +209,11 @@
   <label>Bewertung</label>
 
   <div class="star-rating" id="starRating">
-    <button type="button" class="star" data-value="1">★</button>
-    <button type="button" class="star" data-value="2">★</button>
-    <button type="button" class="star" data-value="3">★</button>
-    <button type="button" class="star" data-value="4">★</button>
-    <button type="button" class="star" data-value="5">★</button>
+    <button type="button" class="star" data-value="1"></button>
+<button type="button" class="star" data-value="2"></button>
+<button type="button" class="star" data-value="3"></button>
+<button type="button" class="star" data-value="4"></button>
+<button type="button" class="star" data-value="5"></button>
   </div>
 
   <div class="rating-text" id="ratingText">
@@ -258,11 +280,13 @@
     star.addEventListener("click", (event) => {
       const rect = star.getBoundingClientRect();
       const clickPosition = event.clientX - rect.left;
-      const half = clickPosition < rect.width / 2;
-
       const starValue = Number(star.dataset.value);
 
-      currentRating = half ? starValue - 0.5 : starValue;
+      if (clickPosition < rect.width / 2) {
+        currentRating = starValue - 0.5;
+      } else {
+        currentRating = starValue;
+      }
 
       ratingInput.value = currentRating;
       ratingText.textContent = currentRating + " von 5 Sternen";
@@ -275,15 +299,12 @@
     stars.forEach((star) => {
       const starValue = Number(star.dataset.value);
 
+      star.classList.remove("full", "half");
+
       if (currentRating >= starValue) {
-        star.textContent = "★";
-        star.classList.add("active");
+        star.classList.add("full");
       } else if (currentRating === starValue - 0.5) {
-        star.textContent = "◐";
-        star.classList.add("active");
-      } else {
-        star.textContent = "★";
-        star.classList.remove("active");
+        star.classList.add("half");
       }
     });
   }
