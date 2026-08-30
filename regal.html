@@ -525,7 +525,7 @@
 
       transform: scale(1.08);
 
-      opacity: 0.92;
+      opacity: 0;
 
       pointer-events: none;
       user-select: none;
@@ -2044,7 +2044,12 @@
 
 
         let totalLuminance = 0;
-        let count = 0;
+
+let totalRed = 0;
+let totalGreen = 0;
+let totalBlue = 0;
+
+let count = 0;
 
 
         for (
@@ -2063,7 +2068,12 @@
             (0.0722 * b);
 
           totalLuminance += luminance;
-          count += 1;
+
+totalRed += r;
+totalGreen += g;
+totalBlue += b;
+
+count += 1;
 
         }
 
@@ -2073,7 +2083,67 @@
             ? totalLuminance / count
             : 128;
 
+const averageRed =
+  count
+    ? Math.round(totalRed / count)
+    : 90;
 
+const averageGreen =
+  count
+    ? Math.round(totalGreen / count)
+    : 70;
+
+const averageBlue =
+  count
+    ? Math.round(totalBlue / count)
+    : 60;
+
+
+const spineRed =
+  Math.round(
+    averageRed * 0.72
+  );
+
+const spineGreen =
+  Math.round(
+    averageGreen * 0.72
+  );
+
+const spineBlue =
+  Math.round(
+    averageBlue * 0.72
+  );
+
+
+spine.style.background =
+  `
+  linear-gradient(
+    90deg,
+    rgb(
+      ${Math.max(spineRed - 22, 0)},
+      ${Math.max(spineGreen - 22, 0)},
+      ${Math.max(spineBlue - 22, 0)}
+    ) 0%,
+
+    rgb(
+      ${Math.min(spineRed + 18, 255)},
+      ${Math.min(spineGreen + 18, 255)},
+      ${Math.min(spineBlue + 18, 255)}
+    ) 22%,
+
+    rgb(
+      ${spineRed},
+      ${spineGreen},
+      ${spineBlue}
+    ) 55%,
+
+    rgb(
+      ${Math.max(spineRed - 28, 0)},
+      ${Math.max(spineGreen - 28, 0)},
+      ${Math.max(spineBlue - 28, 0)}
+    ) 100%
+  )
+  `;
         const title =
           spine.querySelector(
             ".book-spine-title"
