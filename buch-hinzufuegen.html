@@ -262,7 +262,7 @@
         <textarea id="notes" placeholder="Was möchtest du zu dem Buch festhalten?"></textarea>
       </div>
 
-      <button class="save-button" type="button">
+      <button class="save-button" id="saveButton" type="button">
         Buch speichern
       </button>
 
@@ -308,6 +308,108 @@
       }
     });
   }
+</script>
+  <script>
+  const saveButton = document.getElementById("saveButton");
+
+  function openDatabase() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open("buecherregalDB", 1);
+
+      request.onupgradeneeded = function(event) {
+        const db = event.target.result;
+
+        if (!db.objectStoreNames.contains("books")) {
+          db.createObjectStore("books", {
+            keyPath: "id"
+          });
+        }
+      };
+
+      request.onsuccess = function(event) {
+        resolve(event.target.result);
+      };
+
+      request.onerror = function() {
+        reject("Die Datenbank konnte nicht geöffnet werden.");
+      };
+    });
+  }
+
+  saveButton.addEventListener("click", async function() {
+
+    const title = document.getElementById("title").value.trim();
+    const author = document.getElementById("author").value.trim();
+
+    if (title === "") {
+      alert("Bitte gib einen Buchtitel ein.");
+      return;
+    }
+
+    if (author === "") {
+      alert("Bitte gib eine Autorin oder einen Autor ein.");
+      return;
+    }
+
+    const book = {
+      id: crypto.randomUUID(),
+
+      title: title,
+      author: author,
+
+      language: document.getElementById("language").value,
+
+      pages:
+        Number(document.getElementById("pages").value) || null,
+
+      status:
+        document.getElementById("status").value,
+
+      rating:
+        Number(document.getElementById("rating").value) || null,
+
+      format:
+        document.getElementById("format").value,
+
+      series:
+        document.getElementById("series").value.trim(),
+
+      volume:
+        Number(document.getElementById("volume").value) || null,
+
+      cover:
+        document.getElementById("cover").value.trim(),
+
+      notes:
+        document.getElementById("notes").value.trim(),
+
+      createdAt:
+        new Date().toISOString()
+    };
+
+    try {
+      const db = await openDatabase();
+
+      const transaction =
+        db.transaction("books", "readwrite");
+
+      const store =
+        transaction.objectStore("books");
+
+      store.add(book);
+
+      transaction.oncomplete = function() {
+        alert("Buch wurde gespeichert.");
+      };
+
+      transaction.onerror = function() {
+        alert("Beim Speichern ist etwas schiefgelaufen.");
+      };
+
+    } catch (error) {
+      alert(error);
+    }
+  });
 </script>
 </body>
 </html>
