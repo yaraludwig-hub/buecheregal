@@ -2616,8 +2616,15 @@ coverTexture.className =
 coverTexture.crossOrigin =
   "anonymous";
 
+const proxiedCoverUrl =
+  "https://buecherregal-api.yara-ludwig.workers.dev/" +
+  "?cover=" +
+  encodeURIComponent(
+    book.cover
+  );
+
 coverTexture.src =
-  book.cover;
+  proxiedCoverUrl;
 
             coverTexture.alt =
               "";
