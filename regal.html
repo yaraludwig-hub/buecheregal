@@ -2430,8 +2430,29 @@
         };
 
 
+            const cleanIsbn =
+        String(
+          book.isbn ||
+          ""
+        ).replace(
+          /[^0-9Xx]/g,
+          ""
+        );
+
+
+      const automaticSpineUrl =
+        cleanIsbn
+          ? `spines/${cleanIsbn}.jpg`
+          : "";
+
+
+      const spineUrl =
+        book.spineImageUrl ||
+        automaticSpineUrl;
+
+
       if (
-        book.spineImageUrl
+        spineUrl
       ) {
 
         const image =
@@ -2439,13 +2460,12 @@
             "img"
           );
 
-
         image.className =
           "book-spine-image";
 
 
         image.src =
-          book.spineImageUrl;
+          spineUrl;
 
 
         image.alt =
