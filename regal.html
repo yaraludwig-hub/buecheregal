@@ -1,0 +1,4247 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta
+    name="theme-color"
+    content="#f6efe6"
+  >
+
+  <title>Mein Bücherregal</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+  <style>
+
+    /* =========================================================
+       GRUNDLAYOUT
+       ========================================================= */
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      overscroll-behavior-y: none;
+    }
+
+    .shelf-page {
+      width: 100%;
+      max-width: 1250px;
+      margin: 0 auto;
+
+      padding:
+        18px
+        16px
+        50px;
+    }
+
+    .shelf-header {
+      margin-bottom: 18px;
+    }
+
+    .shelf-header h1 {
+      margin-bottom: 6px;
+    }
+
+    .shelf-header p {
+      margin-top: 0;
+
+      color: #75675f;
+    }
+
+
+    /* =========================================================
+       WERKZEUGLEISTE
+       ========================================================= */
+
+    .shelf-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+
+      align-items: center;
+
+      margin-bottom: 18px;
+
+      padding: 14px;
+
+      background: #fffaf4;
+
+      border-radius: 16px;
+
+      box-shadow:
+        0 7px 20px
+        rgba(70, 45, 30, 0.08);
+    }
+
+    .toolbar-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      align-items: center;
+    }
+
+    .toolbar-group + .toolbar-group {
+      margin-left: auto;
+    }
+
+    .toolbar-button,
+    .toolbar-select {
+      min-height: 42px;
+
+      border: 1px solid #d8c8b8;
+
+      border-radius: 11px;
+
+      padding:
+        9px
+        13px;
+
+      background: #fff;
+
+      color: #3d3028;
+
+      font: inherit;
+    }
+
+    .toolbar-button {
+      cursor: pointer;
+
+      text-decoration: none;
+
+      display: inline-flex;
+
+      align-items: center;
+      justify-content: center;
+
+      gap: 6px;
+
+      font-weight: 600;
+    }
+
+    .toolbar-button.primary {
+      background: #b88f6d;
+
+      border-color: #b88f6d;
+
+      color: white;
+    }
+
+    .toolbar-button.active {
+      background: #ead9c8;
+
+      border-color: #b88f6d;
+    }
+
+    .toolbar-button:active {
+      transform: scale(0.98);
+    }
+
+
+    /* =========================================================
+       INFOLEISTE
+       ========================================================= */
+
+    .shelf-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+
+      margin-bottom: 14px;
+
+      font-size: 14px;
+
+      color: #75675f;
+    }
+
+    .info-pill {
+      background: #ead9c8;
+
+      border-radius: 999px;
+
+      padding:
+        6px
+        11px;
+    }
+
+
+    /* =========================================================
+       REGAL
+       ========================================================= */
+
+    .bookshelf-wrapper {
+      position: relative;
+
+      width: 100%;
+    }
+
+    .bookshelf {
+      position: relative;
+
+      overflow: hidden;
+
+      padding:
+        26px
+        18px
+        34px;
+
+      border:
+        12px
+        solid
+        #69442f;
+
+      border-radius: 20px;
+
+      background:
+        linear-gradient(
+          90deg,
+          #86583a 0%,
+          #a5714d 12%,
+          #8a5a3b 31%,
+          #a06b47 52%,
+          #8c5b3b 72%,
+          #a5704b 88%,
+          #805238 100%
+        );
+
+      box-shadow:
+        0 18px 40px
+        rgba(60, 35, 22, 0.28),
+
+        inset
+        0
+        0
+        26px
+        rgba(255, 255, 255, 0.08);
+    }
+
+    .bookshelf::before {
+      content: "";
+
+      position: absolute;
+
+      inset: 0;
+
+      pointer-events: none;
+
+      opacity: 0.18;
+
+      background:
+        repeating-linear-gradient(
+          90deg,
+          transparent 0,
+          transparent 80px,
+          rgba(55, 28, 14, 0.18) 81px,
+          transparent 83px
+        );
+    }
+
+
+    /* =========================================================
+       EINZELNE REGALEBENE
+       ========================================================= */
+
+    .shelf-row {
+      position: relative;
+
+      min-height: 245px;
+
+      margin-bottom: 34px;
+
+      padding:
+        30px
+        14px
+        22px;
+
+      display: flex;
+
+      align-items: flex-end;
+
+      gap: 4px;
+
+      overflow: hidden;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(40, 22, 12, 0.15),
+          rgba(35, 20, 12, 0.35)
+        );
+
+      border-radius:
+        7px
+        7px
+        2px
+        2px;
+
+      box-shadow:
+        inset
+        0
+        10px
+        18px
+        rgba(35, 18, 10, 0.14);
+    }
+
+    .shelf-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .shelf-row::before {
+      content: "";
+
+      position: absolute;
+
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      height: 22px;
+
+      z-index: 20;
+
+      background:
+        linear-gradient(
+          180deg,
+          #aa744f,
+          #74492f
+        );
+
+      box-shadow:
+        0
+        8px
+        10px
+        rgba(40, 20, 10, 0.42);
+    }
+
+    .shelf-row::after {
+      content: "";
+
+      position: absolute;
+
+      left: 8px;
+      right: 8px;
+      bottom: 18px;
+
+      height: 3px;
+
+      z-index: 21;
+
+      opacity: 0.4;
+
+      background:
+        rgba(255, 255, 255, 0.35);
+    }
+
+    .shelf-drop-highlight {
+      outline:
+        3px
+        dashed
+        rgba(255, 245, 220, 0.75);
+
+      outline-offset: -8px;
+    }
+
+
+    /* =========================================================
+       BUCHRÜCKEN
+       ========================================================= */
+
+    .book-spine {
+      position: relative;
+
+      z-index: 5;
+
+      flex:
+        0
+        0
+        auto;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      overflow: hidden;
+
+      border-radius:
+        3px
+        5px
+        2px
+        2px;
+
+      box-shadow:
+        3px
+        3px
+        7px
+        rgba(35, 18, 10, 0.43),
+
+        inset
+        2px
+        0
+        4px
+        rgba(255, 255, 255, 0.22),
+
+        inset
+        -2px
+        0
+        4px
+        rgba(0, 0, 0, 0.18);
+
+      cursor: grab;
+
+      touch-action: none;
+
+      user-select: none;
+
+      -webkit-user-select: none;
+
+      transform-origin: bottom center;
+
+      transition:
+        transform 0.15s ease,
+        filter 0.15s ease,
+        box-shadow 0.15s ease;
+    }
+
+    .book-spine::before {
+      content: "";
+
+      position: absolute;
+
+      top: 8px;
+      bottom: 8px;
+      left: 4px;
+
+      width: 2px;
+
+      opacity: 0.4;
+
+      background:
+        rgba(255, 255, 255, 0.45);
+    }
+
+    .book-spine::after {
+      content: "";
+
+      position: absolute;
+
+      top: 0;
+      bottom: 0;
+      right: 3px;
+
+      width: 2px;
+
+      opacity: 0.2;
+
+      background:
+        rgba(0, 0, 0, 0.5);
+    }
+
+    .book-spine:hover {
+      transform:
+        translateY(-7px);
+    }
+
+    .book-spine:active {
+      cursor: grabbing;
+    }
+
+    .book-spine.dragging {
+      opacity: 0.65;
+
+      transform:
+        translateY(-15px)
+        scale(1.04);
+
+      filter:
+        brightness(1.08);
+
+      box-shadow:
+        7px
+        10px
+        17px
+        rgba(35, 18, 10, 0.38);
+    }
+
+    .book-spine-title {
+      position: relative;
+
+      z-index: 3;
+
+      writing-mode: vertical-rl;
+
+      transform: rotate(180deg);
+
+      max-height: 150px;
+
+      overflow: hidden;
+
+      padding: 4px;
+
+      font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+      font-size: 13px;
+
+      font-weight: 700;
+
+      line-height: 1.05;
+
+      text-align: center;
+
+      color:
+        rgba(
+          255,
+          255,
+          255,
+          0.95
+        );
+
+      text-shadow:
+        0
+        1px
+        2px
+        rgba(0, 0, 0, 0.55);
+    }
+
+    .book-spine.light .book-spine-title {
+      color: #3d3028;
+
+      text-shadow:
+        0
+        1px
+        1px
+        rgba(255, 255, 255, 0.5);
+    }
+
+    .book-spine-series {
+      position: absolute;
+
+      z-index: 4;
+
+      bottom: 6px;
+
+      width: 7px;
+      height: 7px;
+
+      border-radius: 50%;
+
+      background:
+        rgba(
+          255,
+          235,
+          190,
+          0.8
+        );
+
+      box-shadow:
+        0
+        0
+        4px
+        rgba(255, 235, 190, 0.65);
+    }
+
+
+    /* =========================================================
+       COVER-ANSICHT
+       ========================================================= */
+
+    .shelf-row.cover-mode {
+      align-items: flex-end;
+
+      gap: 12px;
+    }
+
+    .cover-book {
+      position: relative;
+
+      z-index: 5;
+
+      flex:
+        0
+        0
+        auto;
+
+      width: 105px;
+
+      min-height: 160px;
+
+      cursor: grab;
+
+      touch-action: none;
+
+      user-select: none;
+
+      -webkit-user-select: none;
+
+      transition:
+        transform
+        0.16s
+        ease;
+    }
+
+    .cover-book:hover {
+      transform:
+        translateY(-7px);
+    }
+
+    .cover-book.dragging {
+      opacity: 0.6;
+
+      transform:
+        translateY(-14px)
+        scale(1.04);
+    }
+
+    .cover-book img {
+      display: block;
+
+      width: 100%;
+      height: 158px;
+
+      object-fit: cover;
+
+      border-radius:
+        4px
+        6px
+        5px
+        4px;
+
+      box-shadow:
+        4px
+        6px
+        10px
+        rgba(35, 18, 10, 0.38);
+    }
+
+    .cover-placeholder {
+      width: 100%;
+      height: 158px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      padding: 10px;
+
+      text-align: center;
+
+      font-family: Georgia, serif;
+
+      font-size: 13px;
+
+      border-radius: 5px;
+
+      color: white;
+
+      background:
+        #75513e;
+
+      box-shadow:
+        4px
+        6px
+        10px
+        rgba(35, 18, 10, 0.38);
+    }
+
+
+    /* =========================================================
+       LEERES REGAL
+       ========================================================= */
+
+    .empty-shelf {
+      position: relative;
+
+      z-index: 3;
+
+      width: 100%;
+
+      padding-bottom: 70px;
+
+      text-align: center;
+
+      color:
+        rgba(
+          255,
+          255,
+          255,
+          0.72
+        );
+
+      font-size: 14px;
+    }
+
+
+    /* =========================================================
+       DEKORATIONEN
+       ========================================================= */
+
+    .decoration-layer {
+      position: absolute;
+
+      inset: 0;
+
+      z-index: 12;
+
+      pointer-events: none;
+    }
+
+    .decoration {
+      position: absolute;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      min-width: 44px;
+      min-height: 44px;
+
+      font-size: 42px;
+
+      line-height: 1;
+
+      cursor: grab;
+
+      touch-action: none;
+
+      user-select: none;
+
+      -webkit-user-select: none;
+
+      pointer-events: auto;
+
+      filter:
+        drop-shadow(
+          2px
+          5px
+          4px
+          rgba(40, 20, 10, 0.3)
+        );
+
+      transition:
+        transform
+        0.1s
+        ease;
+    }
+
+    .decoration:active {
+      cursor: grabbing;
+
+      transform:
+        scale(1.08);
+    }
+
+    .decoration.selected {
+      outline:
+        2px
+        dashed
+        rgba(
+          255,
+          245,
+          220,
+          0.9
+        );
+
+      outline-offset: 5px;
+
+      border-radius: 8px;
+    }
+
+
+    /* =========================================================
+       DEKO-AUSWAHL
+       ========================================================= */
+
+    .deco-panel {
+      display: none;
+
+      margin-bottom: 15px;
+
+      padding: 14px;
+
+      background: #fffaf4;
+
+      border-radius: 15px;
+
+      box-shadow:
+        0
+        7px
+        20px
+        rgba(70, 45, 30, 0.09);
+    }
+
+    .deco-panel.open {
+      display: block;
+    }
+
+    .deco-panel-title {
+      margin:
+        0
+        0
+        10px;
+
+      font-weight: 700;
+    }
+
+    .deco-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          auto-fill,
+          minmax(58px, 1fr)
+        );
+
+      gap: 8px;
+    }
+
+    .deco-option {
+      min-height: 58px;
+
+      border:
+        1px
+        solid
+        #dccbbb;
+
+      border-radius: 12px;
+
+      background: white;
+
+      font-size: 31px;
+
+      cursor: pointer;
+    }
+
+    .deco-option:active {
+      transform: scale(0.95);
+    }
+
+    .deco-delete {
+      margin-top: 12px;
+
+      display: none;
+    }
+
+    .deco-delete.visible {
+      display: inline-flex;
+    }
+
+
+    /* =========================================================
+       BUCHDETAILS
+       ========================================================= */
+
+    .book-dialog {
+      width:
+        min(
+          92vw,
+          500px
+        );
+
+      max-height: 88vh;
+
+      overflow-y: auto;
+
+      padding: 0;
+
+      border: none;
+
+      border-radius: 20px;
+
+      background: #fffaf4;
+
+      color: #3d3028;
+
+      box-shadow:
+        0
+        22px
+        55px
+        rgba(40, 25, 15, 0.42);
+    }
+
+    .book-dialog::backdrop {
+      background:
+        rgba(
+          35,
+          24,
+          18,
+          0.58
+        );
+
+      backdrop-filter:
+        blur(2px);
+    }
+
+    .dialog-content {
+      padding: 23px;
+    }
+
+    .dialog-cover {
+      display: block;
+
+      width: 125px;
+
+      max-height: 190px;
+
+      object-fit: cover;
+
+      margin:
+        0
+        auto
+        17px;
+
+      border-radius: 7px;
+
+      box-shadow:
+        0
+        9px
+        20px
+        rgba(50, 30, 20, 0.23);
+    }
+
+    .dialog-title {
+      margin:
+        0
+        0
+        4px;
+
+      text-align: center;
+
+      font-family:
+        Georgia,
+        serif;
+    }
+
+    .dialog-author {
+      text-align: center;
+
+      color: #75675f;
+
+      margin-bottom: 14px;
+    }
+
+    .dialog-stars {
+      text-align: center;
+
+      margin-bottom: 17px;
+
+      font-size: 21px;
+
+      letter-spacing: 1px;
+
+      color: #a67843;
+    }
+
+    .dialog-info {
+      display: grid;
+
+      gap: 8px;
+
+      padding:
+        14px
+        0;
+
+      border-top:
+        1px
+        solid
+        #eadfd3;
+
+      border-bottom:
+        1px
+        solid
+        #eadfd3;
+
+      font-size: 14px;
+    }
+
+    .dialog-notes {
+      margin-top: 15px;
+
+      padding: 13px;
+
+      border-radius: 11px;
+
+      background: #f3e8dc;
+
+      white-space: pre-wrap;
+
+      font-size: 14px;
+    }
+
+    .dialog-buttons {
+      display: flex;
+
+      gap: 9px;
+
+      margin-top: 18px;
+    }
+
+    .dialog-buttons > * {
+      flex: 1;
+    }
+
+
+    /* =========================================================
+       HINWEIS BEIM VERSCHIEBEN
+       ========================================================= */
+
+    .move-hint {
+      display: none;
+
+      position: fixed;
+
+      left: 50%;
+      bottom:
+        max(
+          20px,
+          env(
+            safe-area-inset-bottom
+          )
+        );
+
+      z-index: 100;
+
+      transform:
+        translateX(-50%);
+
+      padding:
+        9px
+        15px;
+
+      border-radius: 999px;
+
+      background:
+        rgba(
+          55,
+          40,
+          31,
+          0.94
+        );
+
+      color: white;
+
+      font-size: 13px;
+
+      box-shadow:
+        0
+        7px
+        18px
+        rgba(30, 20, 15, 0.24);
+    }
+
+    .move-hint.visible {
+      display: block;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+
+    @media (
+      max-width: 700px
+    ) {
+
+      .shelf-page {
+        padding:
+          12px
+          10px
+          40px;
+      }
+
+      .toolbar-group + .toolbar-group {
+        margin-left: 0;
+      }
+
+      .shelf-toolbar {
+        align-items: stretch;
+      }
+
+      .toolbar-group {
+        width: 100%;
+      }
+
+      .toolbar-button,
+      .toolbar-select {
+        flex: 1;
+      }
+
+      .bookshelf {
+        padding:
+          20px
+          9px
+          27px;
+
+        border-width: 9px;
+      }
+
+      .shelf-row {
+        min-height: 225px;
+
+        padding:
+          24px
+          8px
+          20px;
+
+        margin-bottom: 27px;
+      }
+
+      .book-spine-title {
+        font-size: 12px;
+      }
+
+      .cover-book {
+        width: 92px;
+      }
+
+      .cover-book img,
+      .cover-placeholder {
+        height: 142px;
+      }
+
+      .dialog-buttons {
+        flex-direction: column;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+  <main class="shelf-page">
+
+
+    <!-- ======================================================
+         KOPF
+         ====================================================== -->
+
+    <header class="page-header shelf-header">
+
+      <a
+        href="index.html"
+        class="back"
+      >
+        ← Zurück
+      </a>
+
+      <h1>Mein Bücherregal</h1>
+
+      <p>
+        Deine persönliche Sammlung.
+      </p>
+
+    </header>
+
+
+    <!-- ======================================================
+         WERKZEUGLEISTE
+         ====================================================== -->
+
+    <section class="shelf-toolbar">
+
+      <div class="toolbar-group">
+
+        <a
+          href="buch-hinzufuegen.html"
+          class="toolbar-button primary"
+        >
+          ＋ Buch
+        </a>
+
+        <a
+          href="bibliothek.html"
+          class="toolbar-button"
+        >
+          Bibliothek
+        </a>
+
+        <button
+          type="button"
+          class="toolbar-button"
+          id="decoButton"
+        >
+          🪴 Deko
+        </button>
+
+      </div>
+
+
+      <div class="toolbar-group">
+
+        <button
+          type="button"
+          class="toolbar-button active"
+          id="spineViewButton"
+        >
+          Buchrücken
+        </button>
+
+        <button
+          type="button"
+          class="toolbar-button"
+          id="coverViewButton"
+        >
+          Cover
+        </button>
+
+        <select
+          id="sortSelect"
+          class="toolbar-select"
+        >
+          <option value="manual">
+            Eigene Reihenfolge
+          </option>
+
+          <option value="title">
+            Titel A–Z
+          </option>
+
+          <option value="author">
+            Autor A–Z
+          </option>
+
+          <option value="rating">
+            Bewertung
+          </option>
+
+          <option value="year">
+            Erscheinungsjahr
+          </option>
+
+          <option value="recent">
+            Zuletzt hinzugefügt
+          </option>
+
+        </select>
+
+      </div>
+
+    </section>
+
+
+    <!-- ======================================================
+         DEKO-AUSWAHL
+         ====================================================== -->
+
+    <section
+      class="deco-panel"
+      id="decoPanel"
+    >
+
+      <div class="deco-panel-title">
+        Dekoration auswählen
+      </div>
+
+      <div
+        class="deco-grid"
+        id="decoGrid"
+      ></div>
+
+      <button
+        type="button"
+        class="toolbar-button deco-delete"
+        id="deleteDecorationButton"
+      >
+        Ausgewählte Deko löschen
+      </button>
+
+    </section>
+
+
+    <!-- ======================================================
+         INFORMATIONEN
+         ====================================================== -->
+
+    <div class="shelf-info">
+
+      <span
+        class="info-pill"
+        id="bookCount"
+      >
+        0 Bücher
+      </span>
+
+      <span
+        class="info-pill"
+        id="viewInfo"
+      >
+        Buchrücken
+      </span>
+
+    </div>
+
+
+    <!-- ======================================================
+         REGAL
+         ====================================================== -->
+
+    <div class="bookshelf-wrapper">
+
+      <section
+        class="bookshelf"
+        id="bookshelf"
+      >
+
+        <div
+          class="shelf-row"
+          data-shelf="0"
+        ></div>
+
+        <div
+          class="shelf-row"
+          data-shelf="1"
+        ></div>
+
+        <div
+          class="shelf-row"
+          data-shelf="2"
+        ></div>
+
+        <div
+          class="shelf-row"
+          data-shelf="3"
+        ></div>
+
+
+        <div
+          class="decoration-layer"
+          id="decorationLayer"
+        ></div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <!-- ========================================================
+       BUCHDETAILS
+       ======================================================== -->
+
+  <dialog
+    class="book-dialog"
+    id="bookDialog"
+  >
+
+    <div class="dialog-content">
+
+      <img
+        class="dialog-cover"
+        id="dialogCover"
+        alt=""
+      >
+
+      <h2
+        class="dialog-title"
+        id="dialogTitle"
+      ></h2>
+
+      <div
+        class="dialog-author"
+        id="dialogAuthor"
+      ></div>
+
+      <div
+        class="dialog-stars"
+        id="dialogStars"
+      ></div>
+
+      <div
+        class="dialog-info"
+        id="dialogInfo"
+      ></div>
+
+      <div
+        class="dialog-notes"
+        id="dialogNotes"
+      ></div>
+
+      <div class="dialog-buttons">
+
+        <a
+          href="bibliothek.html"
+          class="toolbar-button primary"
+        >
+          In Bibliothek öffnen
+        </a>
+
+        <button
+          type="button"
+          class="toolbar-button"
+          id="closeDialog"
+        >
+          Schließen
+        </button>
+
+      </div>
+
+    </div>
+
+  </dialog>
+
+
+  <div
+    class="move-hint"
+    id="moveHint"
+  >
+    Buch an die gewünschte Stelle ziehen
+  </div>
+
+
+  <script>
+
+    /* =========================================================
+       DATENBANK
+       ========================================================= */
+
+    const DB_NAME =
+      "buecherregalDB";
+
+    const DB_VERSION =
+      1;
+
+    const STORE_NAME =
+      "books";
+
+
+    function openDatabase() {
+
+      return new Promise(
+        (resolve, reject) => {
+
+          const request =
+            indexedDB.open(
+              DB_NAME,
+              DB_VERSION
+            );
+
+          request.onupgradeneeded =
+            event => {
+
+              const db =
+                event.target.result;
+
+              if (
+                !db.objectStoreNames.contains(
+                  STORE_NAME
+                )
+              ) {
+
+                db.createObjectStore(
+                  STORE_NAME,
+                  {
+                    keyPath: "id"
+                  }
+                );
+
+              }
+
+            };
+
+
+          request.onsuccess =
+            () => {
+
+              resolve(
+                request.result
+              );
+
+            };
+
+
+          request.onerror =
+            () => {
+
+              reject(
+                request.error
+              );
+
+            };
+
+        }
+      );
+
+    }
+
+
+    async function getAllBooks() {
+
+      const db =
+        await openDatabase();
+
+
+      return new Promise(
+        (resolve, reject) => {
+
+          const transaction =
+            db.transaction(
+              STORE_NAME,
+              "readonly"
+            );
+
+          const store =
+            transaction.objectStore(
+              STORE_NAME
+            );
+
+          const request =
+            store.getAll();
+
+
+          request.onsuccess =
+            () => {
+
+              resolve(
+                request.result || []
+              );
+
+            };
+
+
+          request.onerror =
+            () => {
+
+              reject(
+                request.error
+              );
+
+            };
+
+        }
+      );
+
+    }
+
+
+    async function saveBook(
+      book
+    ) {
+
+      const db =
+        await openDatabase();
+
+
+      return new Promise(
+        (resolve, reject) => {
+
+          const transaction =
+            db.transaction(
+              STORE_NAME,
+              "readwrite"
+            );
+
+          const store =
+            transaction.objectStore(
+              STORE_NAME
+            );
+
+          store.put(
+            book
+          );
+
+
+          transaction.oncomplete =
+            () => {
+
+              resolve();
+
+            };
+
+
+          transaction.onerror =
+            () => {
+
+              reject(
+                transaction.error
+              );
+
+            };
+
+        }
+      );
+
+    }
+
+
+    /* =========================================================
+       ZUSTAND
+       ========================================================= */
+
+    let books = [];
+
+    let displayedBooks = [];
+
+    let currentView =
+      localStorage.getItem(
+        "bookshelfView"
+      ) || "spine";
+
+    let currentSort =
+      localStorage.getItem(
+        "bookshelfSort"
+      ) || "manual";
+
+    let draggingBookId =
+      null;
+
+    let dragStartX =
+      0;
+
+    let dragStartY =
+      0;
+
+    let movedDuringDrag =
+      false;
+
+    let selectedDecorationId =
+      null;
+
+
+    /* =========================================================
+       BUCHFARBEN
+       ========================================================= */
+
+    const shelfColors = [
+
+      "#713f3f",
+
+      "#355e61",
+
+      "#85653d",
+
+      "#544871",
+
+      "#436b50",
+
+      "#985641",
+
+      "#3e6178",
+
+      "#76533e",
+
+      "#8f7447",
+
+      "#70495c",
+
+      "#41695e",
+
+      "#975d48",
+
+      "#4e5478",
+
+      "#826340",
+
+      "#6d4545",
+
+      "#45636c"
+
+    ];
+
+
+    function hashString(
+      text
+    ) {
+
+      let hash = 0;
+
+
+      for (
+        let i = 0;
+        i < text.length;
+        i++
+      ) {
+
+        hash =
+          (
+            (
+              hash << 5
+            ) -
+            hash
+          ) +
+          text.charCodeAt(
+            i
+          );
+
+        hash |= 0;
+
+      }
+
+
+      return hash;
+
+    }
+
+
+    function getBookColor(
+      book,
+      index
+    ) {
+
+      if (
+        book.spineColor &&
+        String(
+          book.spineColor
+        ).trim()
+      ) {
+
+        return book.spineColor;
+
+      }
+
+
+      const text =
+        (
+          book.title ||
+          ""
+        ) +
+        (
+          book.author ||
+          ""
+        ) +
+        index;
+
+
+      const colorIndex =
+        Math.abs(
+          hashString(
+            text
+          )
+        ) %
+        shelfColors.length;
+
+
+      return shelfColors[
+        colorIndex
+      ];
+
+    }
+
+
+    function lightenColor(
+      hex,
+      amount
+    ) {
+
+      if (
+        !hex ||
+        !hex.startsWith(
+          "#"
+        ) ||
+        hex.length !== 7
+      ) {
+
+        return hex;
+
+      }
+
+
+      let r =
+        parseInt(
+          hex.substring(
+            1,
+            3
+          ),
+          16
+        );
+
+      let g =
+        parseInt(
+          hex.substring(
+            3,
+            5
+          ),
+          16
+        );
+
+      let b =
+        parseInt(
+          hex.substring(
+            5,
+            7
+          ),
+          16
+        );
+
+
+      r =
+        Math.min(
+          255,
+          r + amount
+        );
+
+      g =
+        Math.min(
+          255,
+          g + amount
+        );
+
+      b =
+        Math.min(
+          255,
+          b + amount
+        );
+
+
+      return (
+        "#" +
+        r
+          .toString(16)
+          .padStart(
+            2,
+            "0"
+          ) +
+        g
+          .toString(16)
+          .padStart(
+            2,
+            "0"
+          ) +
+        b
+          .toString(16)
+          .padStart(
+            2,
+            "0"
+          )
+      );
+
+    }
+
+
+    function isLightColor(
+      hex
+    ) {
+
+      if (
+        !hex ||
+        !hex.startsWith(
+          "#"
+        ) ||
+        hex.length !== 7
+      ) {
+
+        return false;
+
+      }
+
+
+      const r =
+        parseInt(
+          hex.substring(
+            1,
+            3
+          ),
+          16
+        );
+
+      const g =
+        parseInt(
+          hex.substring(
+            3,
+            5
+          ),
+          16
+        );
+
+      const b =
+        parseInt(
+          hex.substring(
+            5,
+            7
+          ),
+          16
+        );
+
+
+      const brightness =
+        (
+          r * 299 +
+          g * 587 +
+          b * 114
+        ) /
+        1000;
+
+
+      return brightness >
+        165;
+
+    }
+
+
+    /* =========================================================
+       SORTIERUNG
+       ========================================================= */
+
+    function sortBooks() {
+
+      displayedBooks =
+        [
+          ...books
+        ];
+
+
+      if (
+        currentSort ===
+        "manual"
+      ) {
+
+        displayedBooks.sort(
+          (
+            a,
+            b
+          ) => {
+
+            return (
+              Number(
+                a.sortOrder ??
+                a.createdAt ??
+                0
+              ) -
+              Number(
+                b.sortOrder ??
+                b.createdAt ??
+                0
+              )
+            );
+
+          }
+        );
+
+      }
+
+
+      if (
+        currentSort ===
+        "title"
+      ) {
+
+        displayedBooks.sort(
+          (
+            a,
+            b
+          ) => {
+
+            return String(
+              a.title ||
+              ""
+            ).localeCompare(
+              String(
+                b.title ||
+                ""
+              ),
+              "de"
+            );
+
+          }
+        );
+
+      }
+
+
+      if (
+        currentSort ===
+        "author"
+      ) {
+
+        displayedBooks.sort(
+          (
+            a,
+            b
+          ) => {
+
+            return String(
+              a.author ||
+              ""
+            ).localeCompare(
+              String(
+                b.author ||
+                ""
+              ),
+              "de"
+            );
+
+          }
+        );
+
+      }
+
+
+      if (
+        currentSort ===
+        "rating"
+      ) {
+
+        displayedBooks.sort(
+          (
+            a,
+            b
+          ) => {
+
+            return (
+              Number(
+                b.rating ||
+                0
+              ) -
+              Number(
+                a.rating ||
+                0
+              )
+            );
+
+          }
+        );
+
+      }
+
+
+      if (
+        currentSort ===
+        "year"
+      ) {
+
+        displayedBooks.sort(
+          (
+            a,
+            b
+          ) => {
+
+            return (
+              Number(
+                b.year ||
+                0
+              ) -
+              Number(
+                a.year ||
+                0
+              )
+            );
+
+          }
+        );
+
+      }
+
+
+      if (
+        currentSort ===
+        "recent"
+      ) {
+
+        displayedBooks.sort(
+          (
+            a,
+            b
+          ) => {
+
+            return (
+              Number(
+                b.createdAt ||
+                0
+              ) -
+              Number(
+                a.createdAt ||
+                0
+              )
+            );
+
+          }
+        );
+
+      }
+
+    }
+
+
+    /* =========================================================
+       REGAL VERTEILUNG
+       ========================================================= */
+
+    function getShelfRows() {
+
+      return [
+        ...document.querySelectorAll(
+          ".shelf-row"
+        )
+      ];
+
+    }
+
+
+    function getBooksPerShelf() {
+
+      const width =
+        window.innerWidth;
+
+
+      if (
+        currentView ===
+        "cover"
+      ) {
+
+        if (
+          width <
+          500
+        ) {
+
+          return 3;
+
+        }
+
+
+        if (
+          width <
+          800
+        ) {
+
+          return 5;
+
+        }
+
+
+        return 8;
+
+      }
+
+
+      if (
+        width <
+        500
+      ) {
+
+        return 7;
+
+      }
+
+
+      if (
+        width <
+        800
+      ) {
+
+        return 10;
+
+      }
+
+
+      return 15;
+
+    }
+
+
+    function ensureEnoughShelves() {
+
+      const bookshelf =
+        document.getElementById(
+          "bookshelf"
+        );
+
+      const decorationLayer =
+        document.getElementById(
+          "decorationLayer"
+        );
+
+      const needed =
+        Math.max(
+          4,
+          Math.ceil(
+            displayedBooks.length /
+            getBooksPerShelf()
+          )
+        );
+
+
+      let rows =
+        getShelfRows();
+
+
+      while (
+        rows.length <
+        needed
+      ) {
+
+        const row =
+          document.createElement(
+            "div"
+          );
+
+        row.className =
+          "shelf-row";
+
+        row.dataset.shelf =
+          rows.length;
+
+
+        bookshelf.insertBefore(
+          row,
+          decorationLayer
+        );
+
+
+        rows =
+          getShelfRows();
+
+      }
+
+
+      while (
+        rows.length >
+        needed &&
+        rows.length >
+        4
+      ) {
+
+        rows[
+          rows.length -
+          1
+        ].remove();
+
+
+        rows =
+          getShelfRows();
+
+      }
+
+    }
+
+
+    /* =========================================================
+       BUCHRÜCKEN ERSTELLEN
+       ========================================================= */
+
+    function createSpine(
+      book,
+      index
+    ) {
+
+      const spine =
+        document.createElement(
+          "div"
+        );
+
+
+      spine.className =
+        "book-spine";
+
+
+      spine.dataset.bookId =
+        book.id;
+
+
+      const color =
+        getBookColor(
+          book,
+          index
+        );
+
+
+      spine.style.background =
+        `
+        linear-gradient(
+          90deg,
+          ${color},
+          ${lightenColor(
+            color,
+            20
+          )} 42%,
+          ${color}
+        )
+        `;
+
+
+      if (
+        isLightColor(
+          color
+        )
+      ) {
+
+        spine.classList.add(
+          "light"
+        );
+
+      }
+
+
+      const heightHash =
+        Math.abs(
+          hashString(
+            (
+              book.title ||
+              ""
+            ) +
+            "height"
+          )
+        );
+
+
+      const widthHash =
+        Math.abs(
+          hashString(
+            (
+              book.author ||
+              ""
+            ) +
+            "width"
+          )
+        );
+
+
+      const height =
+        155 +
+        (
+          heightHash %
+          38
+        );
+
+
+      const width =
+        39 +
+        (
+          widthHash %
+          17
+        );
+
+
+      spine.style.height =
+        height +
+        "px";
+
+
+      spine.style.width =
+        width +
+        "px";
+
+
+      const title =
+        document.createElement(
+          "div"
+        );
+
+
+      title.className =
+        "book-spine-title";
+
+
+      title.textContent =
+        book.title ||
+        "Ohne Titel";
+
+
+      spine.appendChild(
+        title
+      );
+
+
+      if (
+        book.series
+      ) {
+
+        const seriesMark =
+          document.createElement(
+            "div"
+          );
+
+
+        seriesMark.className =
+          "book-spine-series";
+
+
+        spine.appendChild(
+          seriesMark
+        );
+
+      }
+
+
+      addBookPointerEvents(
+        spine,
+        book
+      );
+
+
+      return spine;
+
+    }
+
+
+    /* =========================================================
+       COVER ERSTELLEN
+       ========================================================= */
+
+    function createCover(
+      book,
+      index
+    ) {
+
+      const item =
+        document.createElement(
+          "div"
+        );
+
+
+      item.className =
+        "cover-book";
+
+
+      item.dataset.bookId =
+        book.id;
+
+
+      if (
+        book.cover
+      ) {
+
+        const image =
+          document.createElement(
+            "img"
+          );
+
+
+        image.src =
+          book.cover;
+
+
+        image.alt =
+          book.title ||
+          "Buchcover";
+
+
+        image.loading =
+          "lazy";
+
+
+        image.onerror =
+          () => {
+
+            image.remove();
+
+
+            addCoverPlaceholder(
+              item,
+              book,
+              index
+            );
+
+          };
+
+
+        item.appendChild(
+          image
+        );
+
+      } else {
+
+        addCoverPlaceholder(
+          item,
+          book,
+          index
+        );
+
+      }
+
+
+      addBookPointerEvents(
+        item,
+        book
+      );
+
+
+      return item;
+
+    }
+
+
+    function addCoverPlaceholder(
+      element,
+      book,
+      index
+    ) {
+
+      const placeholder =
+        document.createElement(
+          "div"
+        );
+
+
+      placeholder.className =
+        "cover-placeholder";
+
+
+      placeholder.style.background =
+        getBookColor(
+          book,
+          index
+        );
+
+
+      placeholder.textContent =
+        book.title ||
+        "Ohne Titel";
+
+
+      element.appendChild(
+        placeholder
+      );
+
+    }
+
+
+    /* =========================================================
+       RENDERING
+       ========================================================= */
+
+    function renderShelf() {
+
+      sortBooks();
+
+      ensureEnoughShelves();
+
+
+      const rows =
+        getShelfRows();
+
+
+      rows.forEach(
+        row => {
+
+          row.innerHTML =
+            "";
+
+
+          row.classList.toggle(
+            "cover-mode",
+            currentView ===
+            "cover"
+          );
+
+        }
+      );
+
+
+      const perShelf =
+        getBooksPerShelf();
+
+
+      displayedBooks.forEach(
+        (
+          book,
+          index
+        ) => {
+
+          const shelfIndex =
+            Math.floor(
+              index /
+              perShelf
+            );
+
+
+          const row =
+            rows[
+              shelfIndex
+            ] ||
+            rows[
+              rows.length -
+              1
+            ];
+
+
+          const bookElement =
+            currentView ===
+            "cover"
+              ?
+              createCover(
+                book,
+                index
+              )
+              :
+              createSpine(
+                book,
+                index
+              );
+
+
+          row.appendChild(
+            bookElement
+          );
+
+        }
+      );
+
+
+      rows.forEach(
+        row => {
+
+          if (
+            row.children.length ===
+            0
+          ) {
+
+            const empty =
+              document.createElement(
+                "div"
+              );
+
+
+            empty.className =
+              "empty-shelf";
+
+
+            empty.textContent =
+              "Hier ist noch Platz für Bücher.";
+
+
+            row.appendChild(
+              empty
+            );
+
+          }
+
+        }
+      );
+
+
+      document.getElementById(
+        "bookCount"
+      ).textContent =
+        books.length === 1
+          ?
+          "1 Buch"
+          :
+          books.length +
+          " Bücher";
+
+
+      document.getElementById(
+        "viewInfo"
+      ).textContent =
+        currentView ===
+        "spine"
+          ?
+          "Buchrücken"
+          :
+          "Cover";
+
+
+      updateViewButtons();
+
+
+      renderDecorations();
+
+    }
+
+
+    /* =========================================================
+       ANSICHT WECHSELN
+       ========================================================= */
+
+    function updateViewButtons() {
+
+      const spine =
+        document.getElementById(
+          "spineViewButton"
+        );
+
+
+      const cover =
+        document.getElementById(
+          "coverViewButton"
+        );
+
+
+      spine.classList.toggle(
+        "active",
+        currentView ===
+        "spine"
+      );
+
+
+      cover.classList.toggle(
+        "active",
+        currentView ===
+        "cover"
+      );
+
+    }
+
+
+    document.getElementById(
+      "spineViewButton"
+    ).addEventListener(
+      "click",
+      () => {
+
+        currentView =
+          "spine";
+
+
+        localStorage.setItem(
+          "bookshelfView",
+          currentView
+        );
+
+
+        renderShelf();
+
+      }
+    );
+
+
+    document.getElementById(
+      "coverViewButton"
+    ).addEventListener(
+      "click",
+      () => {
+
+        currentView =
+          "cover";
+
+
+        localStorage.setItem(
+          "bookshelfView",
+          currentView
+        );
+
+
+        renderShelf();
+
+      }
+    );
+
+
+    /* =========================================================
+       SORTIERUNG
+       ========================================================= */
+
+    const sortSelect =
+      document.getElementById(
+        "sortSelect"
+      );
+
+
+    sortSelect.value =
+      currentSort;
+
+
+    sortSelect.addEventListener(
+      "change",
+      () => {
+
+        currentSort =
+          sortSelect.value;
+
+
+        localStorage.setItem(
+          "bookshelfSort",
+          currentSort
+        );
+
+
+        renderShelf();
+
+      }
+    );
+
+
+    /* =========================================================
+       BÜCHER VERSCHIEBEN
+       ========================================================= */
+
+    function addBookPointerEvents(
+      element,
+      book
+    ) {
+
+      let holdTimer =
+        null;
+
+
+      let dragging =
+        false;
+
+
+      let pointerId =
+        null;
+
+
+      element.addEventListener(
+        "pointerdown",
+        event => {
+
+          pointerId =
+            event.pointerId;
+
+
+          dragStartX =
+            event.clientX;
+
+
+          dragStartY =
+            event.clientY;
+
+
+          movedDuringDrag =
+            false;
+
+
+          holdTimer =
+            setTimeout(
+              () => {
+
+                if (
+                  currentSort !==
+                  "manual"
+                ) {
+
+                  return;
+
+                }
+
+
+                dragging =
+                  true;
+
+
+                draggingBookId =
+                  book.id;
+
+
+                element.classList.add(
+                  "dragging"
+                );
+
+
+                document.getElementById(
+                  "moveHint"
+                ).classList.add(
+                  "visible"
+                );
+
+
+                try {
+
+                  element.setPointerCapture(
+                    pointerId
+                  );
+
+                } catch (
+                  error
+                ) {}
+
+              },
+              260
+            );
+
+        }
+      );
+
+
+      element.addEventListener(
+        "pointermove",
+        event => {
+
+          const distance =
+            Math.hypot(
+              event.clientX -
+              dragStartX,
+
+              event.clientY -
+              dragStartY
+            );
+
+
+          if (
+            distance >
+            7
+          ) {
+
+            movedDuringDrag =
+              true;
+
+          }
+
+
+          if (
+            !dragging
+          ) {
+
+            if (
+              distance >
+              10
+            ) {
+
+              clearTimeout(
+                holdTimer
+              );
+
+            }
+
+
+            return;
+
+          }
+
+
+          event.preventDefault();
+
+
+          highlightShelfAtPoint(
+            event.clientX,
+            event.clientY
+          );
+
+        }
+      );
+
+
+      element.addEventListener(
+        "pointerup",
+        async event => {
+
+          clearTimeout(
+            holdTimer
+          );
+
+
+          if (
+            dragging
+          ) {
+
+            dragging =
+              false;
+
+
+            element.classList.remove(
+              "dragging"
+            );
+
+
+            document.getElementById(
+              "moveHint"
+            ).classList.remove(
+              "visible"
+            );
+
+
+            removeShelfHighlights();
+
+
+            await moveBookToPoint(
+              book.id,
+              event.clientX,
+              event.clientY
+            );
+
+
+            draggingBookId =
+              null;
+
+
+            return;
+
+          }
+
+
+          if (
+            !movedDuringDrag
+          ) {
+
+            openBookDialog(
+              book
+            );
+
+          }
+
+        }
+      );
+
+
+      element.addEventListener(
+        "pointercancel",
+        () => {
+
+          clearTimeout(
+            holdTimer
+          );
+
+
+          dragging =
+            false;
+
+
+          draggingBookId =
+            null;
+
+
+          element.classList.remove(
+            "dragging"
+          );
+
+
+          document.getElementById(
+            "moveHint"
+          ).classList.remove(
+            "visible"
+          );
+
+
+          removeShelfHighlights();
+
+        }
+      );
+
+    }
+
+
+    function getShelfAtPoint(
+      x,
+      y
+    ) {
+
+      const rows =
+        getShelfRows();
+
+
+      return rows.find(
+        row => {
+
+          const rect =
+            row.getBoundingClientRect();
+
+
+          return (
+            x >=
+            rect.left &&
+
+            x <=
+            rect.right &&
+
+            y >=
+            rect.top &&
+
+            y <=
+            rect.bottom
+          );
+
+        }
+      );
+
+    }
+
+
+    function highlightShelfAtPoint(
+      x,
+      y
+    ) {
+
+      removeShelfHighlights();
+
+
+      const row =
+        getShelfAtPoint(
+          x,
+          y
+        );
+
+
+      if (
+        row
+      ) {
+
+        row.classList.add(
+          "shelf-drop-highlight"
+        );
+
+      }
+
+    }
+
+
+    function removeShelfHighlights() {
+
+      document.querySelectorAll(
+        ".shelf-drop-highlight"
+      ).forEach(
+        element => {
+
+          element.classList.remove(
+            "shelf-drop-highlight"
+          );
+
+        }
+      );
+
+    }
+
+
+    async function moveBookToPoint(
+      bookId,
+      x,
+      y
+    ) {
+
+      if (
+        currentSort !==
+        "manual"
+      ) {
+
+        return;
+
+      }
+
+
+      const row =
+        getShelfAtPoint(
+          x,
+          y
+        );
+
+
+      if (
+        !row
+      ) {
+
+        return;
+
+      }
+
+
+      const shelfIndex =
+        Number(
+          row.dataset.shelf ||
+          0
+        );
+
+
+      const perShelf =
+        getBooksPerShelf();
+
+
+      const booksInRow =
+        [
+          ...row.querySelectorAll(
+            "[data-book-id]"
+          )
+        ];
+
+
+      let positionInShelf =
+        booksInRow.length;
+
+
+      for (
+        let i = 0;
+        i <
+        booksInRow.length;
+        i++
+      ) {
+
+        const rect =
+          booksInRow[
+            i
+          ].getBoundingClientRect();
+
+
+        if (
+          x <
+          rect.left +
+          rect.width /
+          2
+        ) {
+
+          positionInShelf =
+            i;
+
+          break;
+
+        }
+
+      }
+
+
+      let targetIndex =
+        shelfIndex *
+        perShelf +
+        positionInShelf;
+
+
+      const manualBooks =
+        [
+          ...displayedBooks
+        ];
+
+
+      const oldIndex =
+        manualBooks.findIndex(
+          book =>
+            book.id ===
+            bookId
+        );
+
+
+      if (
+        oldIndex ===
+        -1
+      ) {
+
+        return;
+
+      }
+
+
+      const [
+        movedBook
+      ] =
+        manualBooks.splice(
+          oldIndex,
+          1
+        );
+
+
+      if (
+        targetIndex >
+        oldIndex
+      ) {
+
+        targetIndex--;
+
+      }
+
+
+      targetIndex =
+        Math.max(
+          0,
+          Math.min(
+            targetIndex,
+            manualBooks.length
+          )
+        );
+
+
+      manualBooks.splice(
+        targetIndex,
+        0,
+        movedBook
+      );
+
+
+      for (
+        let i = 0;
+        i <
+        manualBooks.length;
+        i++
+      ) {
+
+        manualBooks[
+          i
+        ].sortOrder =
+          i + 1;
+
+
+        manualBooks[
+          i
+        ].updatedAt =
+          new Date()
+            .toISOString();
+
+
+        await saveBook(
+          manualBooks[
+            i
+          ]
+        );
+
+      }
+
+
+      books =
+        [
+          ...manualBooks
+        ];
+
+
+      renderShelf();
+
+    }
+
+
+    /* =========================================================
+       BUCHDETAILS
+       ========================================================= */
+
+    function openBookDialog(
+      book
+    ) {
+
+      const dialog =
+        document.getElementById(
+          "bookDialog"
+        );
+
+
+      const cover =
+        document.getElementById(
+          "dialogCover"
+        );
+
+
+      const title =
+        document.getElementById(
+          "dialogTitle"
+        );
+
+
+      const author =
+        document.getElementById(
+          "dialogAuthor"
+        );
+
+
+      const stars =
+        document.getElementById(
+          "dialogStars"
+        );
+
+
+      const info =
+        document.getElementById(
+          "dialogInfo"
+        );
+
+
+      const notes =
+        document.getElementById(
+          "dialogNotes"
+        );
+
+
+      title.textContent =
+        book.title ||
+        "Ohne Titel";
+
+
+      author.textContent =
+        book.author ||
+        "Unbekannter Autor";
+
+
+      if (
+        book.cover
+      ) {
+
+        cover.src =
+          book.cover;
+
+
+        cover.style.display =
+          "block";
+
+      } else {
+
+        cover.removeAttribute(
+          "src"
+        );
+
+
+        cover.style.display =
+          "none";
+
+      }
+
+
+      stars.textContent =
+        createStarText(
+          Number(
+            book.rating ||
+            0
+          )
+        );
+
+
+      info.innerHTML =
+        "";
+
+
+      const details = [
+
+        [
+          "Status",
+          book.status
+        ],
+
+        [
+          "Bewertung",
+          book.rating
+            ?
+            book.rating +
+            " / 5"
+            :
+            ""
+        ],
+
+        [
+          "Sprache",
+          book.language
+        ],
+
+        [
+          "Seiten",
+          book.pages
+        ],
+
+        [
+          "Jahr",
+          book.year
+        ],
+
+        [
+          "ISBN",
+          book.isbn
+        ],
+
+        [
+          "Genre",
+          book.genre
+        ],
+
+        [
+          "Format",
+          book.format
+        ],
+
+        [
+          "Reihe",
+          book.series
+        ],
+
+        [
+          "Band",
+          book.volume
+        ]
+
+      ];
+
+
+      details.forEach(
+        (
+          [
+            label,
+            value
+          ]
+        ) => {
+
+          if (
+            value ===
+            "" ||
+
+            value ===
+            null ||
+
+            value ===
+            undefined
+          ) {
+
+            return;
+
+          }
+
+
+          const row =
+            document.createElement(
+              "div"
+            );
+
+
+          const strong =
+            document.createElement(
+              "strong"
+            );
+
+
+          strong.textContent =
+            label +
+            ": ";
+
+
+          row.appendChild(
+            strong
+          );
+
+
+          row.appendChild(
+            document.createTextNode(
+              String(
+                value
+              )
+            )
+          );
+
+
+          info.appendChild(
+            row
+          );
+
+        }
+      );
+
+
+      if (
+        book.notes &&
+        String(
+          book.notes
+        ).trim()
+      ) {
+
+        notes.textContent =
+          book.notes;
+
+
+        notes.style.display =
+          "block";
+
+      } else {
+
+        notes.style.display =
+          "none";
+
+      }
+
+
+      dialog.showModal();
+
+    }
+
+
+    function createStarText(
+      rating
+    ) {
+
+      if (
+        rating <=
+        0
+      ) {
+
+        return "☆☆☆☆☆";
+
+      }
+
+
+      let result =
+        "";
+
+
+      for (
+        let i = 1;
+        i <= 5;
+        i++
+      ) {
+
+        if (
+          rating >=
+          i
+        ) {
+
+          result +=
+            "★";
+
+        } else if (
+          rating >=
+          i - 0.5
+        ) {
+
+          result +=
+            "◐";
+
+        } else {
+
+          result +=
+            "☆";
+
+        }
+
+      }
+
+
+      return result;
+
+    }
+
+
+    document.getElementById(
+      "closeDialog"
+    ).addEventListener(
+      "click",
+      () => {
+
+        document.getElementById(
+          "bookDialog"
+        ).close();
+
+      }
+    );
+
+
+    document.getElementById(
+      "bookDialog"
+    ).addEventListener(
+      "click",
+      event => {
+
+        if (
+          event.target ===
+          event.currentTarget
+        ) {
+
+          event.currentTarget.close();
+
+        }
+
+      }
+    );
+
+
+    /* =========================================================
+       DEKORATIONEN
+       ========================================================= */
+
+    const decorationOptions = [
+
+      "🪴",
+      "🌿",
+      "🌵",
+      "🌷",
+      "🌻",
+      "🍄",
+
+      "🕯️",
+      "🏮",
+      "💡",
+      "✨",
+      "🌙",
+      "⭐",
+
+      "☕",
+      "🫖",
+      "🍵",
+      "🥐",
+      "🍪",
+      "🧁",
+
+      "🐈",
+      "🦋",
+      "🐌",
+      "🦉",
+      "🐝",
+      "🐇",
+
+      "🖼️",
+      "🏺",
+      "🧸",
+      "🎃",
+      "🔮",
+      "🪶"
+
+    ];
+
+
+    function loadDecorations() {
+
+      try {
+
+        const raw =
+          localStorage.getItem(
+            "bookshelfDecorations"
+          );
+
+
+        if (
+          !raw
+        ) {
+
+          return [];
+
+        }
+
+
+        const parsed =
+          JSON.parse(
+            raw
+          );
+
+
+        return Array.isArray(
+          parsed
+        )
+          ?
+          parsed
+          :
+          [];
+
+      } catch (
+        error
+      ) {
+
+        return [];
+
+      }
+
+    }
+
+
+    function saveDecorations(
+      decorations
+    ) {
+
+      localStorage.setItem(
+        "bookshelfDecorations",
+        JSON.stringify(
+          decorations
+        )
+      );
+
+    }
+
+
+    function createDecorationMenu() {
+
+      const grid =
+        document.getElementById(
+          "decoGrid"
+        );
+
+
+      grid.innerHTML =
+        "";
+
+
+      decorationOptions.forEach(
+        emoji => {
+
+          const button =
+            document.createElement(
+              "button"
+            );
+
+
+          button.type =
+            "button";
+
+
+          button.className =
+            "deco-option";
+
+
+          button.textContent =
+            emoji;
+
+
+          button.addEventListener(
+            "click",
+            () => {
+
+              addDecoration(
+                emoji
+              );
+
+            }
+          );
+
+
+          grid.appendChild(
+            button
+          );
+
+        }
+      );
+
+    }
+
+
+    function addDecoration(
+      emoji
+    ) {
+
+      const decorations =
+        loadDecorations();
+
+
+      decorations.push(
+        {
+
+          id:
+            crypto.randomUUID(),
+
+          emoji:
+            emoji,
+
+          x:
+            50,
+
+          y:
+            10 +
+            (
+              decorations.length *
+              7
+            ) %
+            70
+
+        }
+      );
+
+
+      saveDecorations(
+        decorations
+      );
+
+
+      renderDecorations();
+
+    }
+
+
+    function renderDecorations() {
+
+      const layer =
+        document.getElementById(
+          "decorationLayer"
+        );
+
+
+      layer.innerHTML =
+        "";
+
+
+      const decorations =
+        loadDecorations();
+
+
+      decorations.forEach(
+        decoration => {
+
+          const element =
+            document.createElement(
+              "div"
+            );
+
+
+          element.className =
+            "decoration";
+
+
+          if (
+            decoration.id ===
+            selectedDecorationId
+          ) {
+
+            element.classList.add(
+              "selected"
+            );
+
+          }
+
+
+          element.dataset.decorationId =
+            decoration.id;
+
+
+          element.textContent =
+            decoration.emoji;
+
+
+          element.style.left =
+            decoration.x +
+            "%";
+
+
+          element.style.top =
+            decoration.y +
+            "%";
+
+
+          addDecorationEvents(
+            element,
+            decoration
+          );
+
+
+          layer.appendChild(
+            element
+          );
+
+        }
+      );
+
+
+      updateDecorationDeleteButton();
+
+    }
+
+
+    function addDecorationEvents(
+      element,
+      decoration
+    ) {
+
+      let dragging =
+        false;
+
+
+      let startPointerX =
+        0;
+
+
+      let startPointerY =
+        0;
+
+
+      let startX =
+        decoration.x;
+
+
+      let startY =
+        decoration.y;
+
+
+      element.addEventListener(
+        "pointerdown",
+        event => {
+
+          event.preventDefault();
+
+
+          dragging =
+            true;
+
+
+          selectedDecorationId =
+            decoration.id;
+
+
+          startPointerX =
+            event.clientX;
+
+
+          startPointerY =
+            event.clientY;
+
+
+          startX =
+            decoration.x;
+
+
+          startY =
+            decoration.y;
+
+
+          try {
+
+            element.setPointerCapture(
+              event.pointerId
+            );
+
+          } catch (
+            error
+          ) {}
+
+
+          renderDecorationSelection();
+
+        }
+      );
+
+
+      element.addEventListener(
+        "pointermove",
+        event => {
+
+          if (
+            !dragging
+          ) {
+
+            return;
+
+          }
+
+
+          event.preventDefault();
+
+
+          const bookshelf =
+            document.getElementById(
+              "bookshelf"
+            );
+
+
+          const rect =
+            bookshelf.getBoundingClientRect();
+
+
+          const deltaX =
+            (
+              event.clientX -
+              startPointerX
+            ) /
+            rect.width *
+            100;
+
+
+          const deltaY =
+            (
+              event.clientY -
+              startPointerY
+            ) /
+            rect.height *
+            100;
+
+
+          decoration.x =
+            Math.max(
+              0,
+              Math.min(
+                92,
+                startX +
+                deltaX
+              )
+            );
+
+
+          decoration.y =
+            Math.max(
+              0,
+              Math.min(
+                94,
+                startY +
+                deltaY
+              )
+            );
+
+
+          element.style.left =
+            decoration.x +
+            "%";
+
+
+          element.style.top =
+            decoration.y +
+            "%";
+
+        }
+      );
+
+
+      element.addEventListener(
+        "pointerup",
+        () => {
+
+          if (
+            !dragging
+          ) {
+
+            return;
+
+          }
+
+
+          dragging =
+            false;
+
+
+          const decorations =
+            loadDecorations();
+
+
+          const index =
+            decorations.findIndex(
+              item =>
+                item.id ===
+                decoration.id
+            );
+
+
+          if (
+            index !==
+            -1
+          ) {
+
+            decorations[
+              index
+            ] =
+              decoration;
+
+
+            saveDecorations(
+              decorations
+            );
+
+          }
+
+
+          renderDecorationSelection();
+
+        }
+      );
+
+    }
+
+
+    function renderDecorationSelection() {
+
+      document.querySelectorAll(
+        ".decoration"
+      ).forEach(
+        element => {
+
+          element.classList.toggle(
+            "selected",
+            element.dataset.decorationId ===
+            selectedDecorationId
+          );
+
+        }
+      );
+
+
+      updateDecorationDeleteButton();
+
+    }
+
+
+    function updateDecorationDeleteButton() {
+
+      const button =
+        document.getElementById(
+          "deleteDecorationButton"
+        );
+
+
+      button.classList.toggle(
+        "visible",
+        Boolean(
+          selectedDecorationId
+        )
+      );
+
+    }
+
+
+    document.getElementById(
+      "deleteDecorationButton"
+    ).addEventListener(
+      "click",
+      () => {
+
+        if (
+          !selectedDecorationId
+        ) {
+
+          return;
+
+        }
+
+
+        let decorations =
+          loadDecorations();
+
+
+        decorations =
+          decorations.filter(
+            decoration =>
+              decoration.id !==
+              selectedDecorationId
+          );
+
+
+        saveDecorations(
+          decorations
+        );
+
+
+        selectedDecorationId =
+          null;
+
+
+        renderDecorations();
+
+      }
+    );
+
+
+    document.getElementById(
+      "decoButton"
+    ).addEventListener(
+      "click",
+      () => {
+
+        document.getElementById(
+          "decoPanel"
+        ).classList.toggle(
+          "open"
+        );
+
+      }
+    );
+
+
+    /* =========================================================
+       START
+       ========================================================= */
+
+    async function initializeShelf() {
+
+      books =
+        await getAllBooks();
+
+
+      createDecorationMenu();
+
+
+      renderShelf();
+
+    }
+
+
+    window.addEventListener(
+      "resize",
+      () => {
+
+        renderShelf();
+
+      }
+    );
+
+
+    initializeShelf()
+      .catch(
+        error => {
+
+          console.error(
+            "Das Bücherregal konnte nicht geladen werden:",
+            error
+          );
+
+        }
+      );
+
+  </script>
+
+</body>
+
+</html>
