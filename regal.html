@@ -448,7 +448,37 @@
       background:
         rgba(0, 0, 0, 0.5);
     }
+    
+    /* =========================================================
+       ECHTES BUCHRÜCKENBILD
+       ========================================================= */
 
+    .book-spine-image {
+      position: absolute;
+      inset: 0;
+
+      width: 100%;
+      height: 100%;
+
+      display: block;
+
+      object-fit: cover;
+      object-position: center;
+
+      border-radius: inherit;
+
+      z-index: 2;
+
+      pointer-events: none;
+
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .book-spine.has-real-spine::before,
+    .book-spine.has-real-spine::after {
+      z-index: 3;
+    }
     .book-spine:hover {
       transform:
         translateY(-7px);
@@ -2228,7 +2258,7 @@
        BUCHRÜCKEN ERSTELLEN
        ========================================================= */
 
-    function createSpine(
+        function createSpine(
       book,
       index
     ) {
@@ -2252,7 +2282,6 @@
           book,
           index
         );
-
 
       spine.style.background =
         `
@@ -2312,7 +2341,6 @@
           38
         );
 
-
       const width =
         39 +
         (
@@ -2331,43 +2359,132 @@
         "px";
 
 
-      const title =
-        document.createElement(
-          "div"
-        );
+      const addGeneratedSpine =
+        () => {
 
+          if (
+            spine.querySelector(
+              ".book-spine-title"
+            )
+          ) {
+            return;
+          }
 
-      title.className =
-        "book-spine-title";
-
-
-      title.textContent =
-        book.title ||
-        "Ohne Titel";
-
-
-      spine.appendChild(
-        title
-      );
-
-
-      if (
-        book.series
-      ) {
-
-        const seriesMark =
-          document.createElement(
-            "div"
+          spine.classList.remove(
+            "has-real-spine"
           );
 
 
-        seriesMark.className =
-          "book-spine-series";
+          const oldImage =
+            spine.querySelector(
+              ".book-spine-image"
+            );
+
+          if (
+            oldImage
+          ) {
+            oldImage.remove();
+          }
+
+
+          const title =
+            document.createElement(
+              "div"
+            );
+
+
+          title.className =
+            "book-spine-title";
+
+
+          title.textContent =
+            book.title ||
+            "Ohne Titel";
+
+
+          spine.appendChild(
+            title
+          );
+
+
+          if (
+            book.series
+          ) {
+
+            const seriesMark =
+              document.createElement(
+                "div"
+              );
+
+
+            seriesMark.className =
+              "book-spine-series";
+
+
+            spine.appendChild(
+              seriesMark
+            );
+
+          }
+
+        };
+
+
+      if (
+        book.spineImageUrl
+      ) {
+
+        const image =
+          document.createElement(
+            "img"
+          );
+
+
+        image.className =
+          "book-spine-image";
+
+
+        image.src =
+          book.spineImageUrl;
+
+
+        image.alt =
+          "Buchrücken von " +
+          (
+            book.title ||
+            "Buch"
+          );
+
+
+        image.loading =
+          "lazy";
+
+
+        image.onerror =
+          () => {
+
+            addGeneratedSpine();
+
+          };
+
+
+        image.onload =
+          () => {
+
+            spine.classList.add(
+              "has-real-spine"
+            );
+
+          };
 
 
         spine.appendChild(
-          seriesMark
+          image
         );
+
+      } else {
+
+        addGeneratedSpine();
 
       }
 
@@ -2379,10 +2496,7 @@
 
 
       return spine;
-
     }
-
-
     /* =========================================================
        COVER ERSTELLEN
        ========================================================= */
