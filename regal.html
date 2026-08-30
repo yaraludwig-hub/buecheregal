@@ -738,6 +738,34 @@ box-shadow:
 .book-spine-ornament.bottom {
   bottom: 61px;
 }
+    .book-spine-center-ornament {
+  position: absolute;
+
+  left: 50%;
+  bottom: 52px;
+
+  z-index: 4;
+
+  transform:
+    translateX(-50%);
+
+  font-size: 7px;
+
+  line-height: 1;
+
+  color: currentColor;
+
+  opacity: 0.78;
+
+  text-shadow:
+    0
+    1px
+    1px
+    rgba(0, 0, 0, 0.28);
+
+  pointer-events: none;
+}
+    
     .book-spine-series {
       position: absolute;
 
@@ -2259,6 +2287,10 @@ const ornaments =
   spine.querySelectorAll(
     ".book-spine-ornament"
   );
+        const centerOrnament =
+  spine.querySelector(
+    ".book-spine-center-ornament"
+  );
         if (average > 165) {
 
           if (title) {
@@ -2282,6 +2314,10 @@ const ornaments =
       "#57453a";
   }
 );
+          if (centerOrnament) {
+  centerOrnament.style.color =
+    "#57453a";
+}
 
         } else {
 
@@ -2319,6 +2355,14 @@ const ornaments =
           : "#eee0c9";
   }
 );
+          if (centerOrnament) {
+  centerOrnament.style.color =
+    averageRed > averageBlue + 12
+      ? "#e7c47a"
+      : averageBlue > averageRed + 10
+        ? "#d9dce2"
+        : "#eee0c9";
+}
         }
       } catch (error) {
 
@@ -2887,6 +2931,20 @@ bottomOrnament.className =
 
 spine.appendChild(
   bottomOrnament
+);
+          const centerOrnament =
+  document.createElement(
+    "div"
+  );
+
+centerOrnament.className =
+  "book-spine-center-ornament";
+
+centerOrnament.textContent =
+  "◆";
+
+spine.appendChild(
+  centerOrnament
 );
           const title =
             document.createElement(
