@@ -2250,6 +2250,20 @@ const minColor =
 const colorSpread =
   maxColor - minColor;
 
+        let ornamentStyle =
+  "classic";
+
+if (colorSpread > 65) {
+  ornamentStyle =
+    "geometric";
+} else if (average > 155) {
+  ornamentStyle =
+    "delicate";
+}
+
+spine.dataset.ornamentStyle =
+  ornamentStyle;
+
 
 const spineRed =
   Math.round(
@@ -2997,6 +3011,20 @@ centerOrnament.className =
 
 centerOrnament.textContent =
   "◆";
+
+if (
+  spine.dataset.ornamentStyle ===
+  "geometric"
+) {
+  centerOrnament.textContent =
+    "✦";
+} else if (
+  spine.dataset.ornamentStyle ===
+  "delicate"
+) {
+  centerOrnament.textContent =
+    "⋆";
+}
 
 spine.appendChild(
   centerOrnament
