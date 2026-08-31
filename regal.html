@@ -3588,34 +3588,6 @@ spine.appendChild(
   spinePattern
 );
           
-          const centerOrnament =
-  document.createElement(
-    "div"
-  );
-
-centerOrnament.className =
-  "book-spine-center-ornament";
-
-centerOrnament.textContent =
-  "◆";
-
-if (
-  spine.dataset.ornamentStyle ===
-  "geometric"
-) {
-  centerOrnament.textContent =
-    "✦";
-} else if (
-  spine.dataset.ornamentStyle ===
-  "delicate"
-) {
-  centerOrnament.textContent =
-    "⋆";
-}
-
-spine.appendChild(
-  centerOrnament
-);
           const title =
             document.createElement(
               "div"
