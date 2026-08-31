@@ -739,6 +739,72 @@ box-shadow:
 .book-spine-ornament.bottom {
   bottom: 61px;
 }
+.book-spine[data-ornament-style="classic"]
+.book-spine-ornament {
+  left: 6px;
+  right: 6px;
+}
+
+.book-spine[data-ornament-style="bold"]
+.book-spine-ornament {
+  left: 4px;
+  right: 4px;
+  height: 2px;
+}
+
+.book-spine[data-ornament-style="geometric"]
+.book-spine-ornament {
+  left: 8px;
+  right: 8px;
+  height: 1px;
+}
+
+.book-spine[data-ornament-style="delicate"]
+.book-spine-ornament {
+  left: 10px;
+  right: 10px;
+  height: 1px;
+  opacity: 0.48;
+}
+
+.book-spine[data-ornament-style="dark"]
+.book-spine-ornament {
+  left: 7px;
+  right: 7px;
+  height: 1px;
+  box-shadow:
+    0 0 2px currentColor;
+}
+
+    .book-spine[data-ornament-style="classic"]
+.book-spine-center-ornament {
+  font-size: 7px;
+}
+
+.book-spine[data-ornament-style="bold"]
+.book-spine-center-ornament {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.book-spine[data-ornament-style="geometric"]
+.book-spine-center-ornament {
+  font-size: 9px;
+}
+
+.book-spine[data-ornament-style="delicate"]
+.book-spine-center-ornament {
+  font-size: 7px;
+  opacity: 0.58;
+}
+
+.book-spine[data-ornament-style="dark"]
+.book-spine-center-ornament {
+  font-size: 8px;
+  text-shadow:
+    0 0 3px currentColor;
+}
+    
     .book-spine-center-ornament {
   position: absolute;
 
@@ -2253,12 +2319,26 @@ const colorSpread =
         let ornamentStyle =
   "classic";
 
-if (colorSpread > 65) {
+if (
+  colorSpread > 80
+) {
+  ornamentStyle =
+    "bold";
+} else if (
+  colorSpread > 55
+) {
   ornamentStyle =
     "geometric";
-} else if (average > 155) {
+} else if (
+  average > 170
+) {
   ornamentStyle =
     "delicate";
+} else if (
+  average < 95
+) {
+  ornamentStyle =
+    "dark";
 }
 
 spine.dataset.ornamentStyle =
@@ -2357,6 +2437,12 @@ if (centerOrnament) {
 
   if (
     ornamentStyle ===
+    "bold"
+  ) {
+    centerOrnament.textContent =
+      "✹";
+  } else if (
+    ornamentStyle ===
     "geometric"
   ) {
     centerOrnament.textContent =
@@ -2367,6 +2453,12 @@ if (centerOrnament) {
   ) {
     centerOrnament.textContent =
       "⋆";
+  } else if (
+    ornamentStyle ===
+    "dark"
+  ) {
+    centerOrnament.textContent =
+      "◇";
   }
 
 }
