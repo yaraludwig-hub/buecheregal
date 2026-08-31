@@ -747,24 +747,45 @@ box-shadow:
 
 .book-spine[data-ornament-style="bold"]
 .book-spine-ornament {
-  left: 4px;
-  right: 4px;
-  height: 2px;
+  left: 5px;
+  right: 5px;
+  height: 3px;
+  background:
+    linear-gradient(
+      180deg,
+      currentColor 0 1px,
+      transparent 1px 2px,
+      currentColor 2px 3px
+    );
 }
 
 .book-spine[data-ornament-style="geometric"]
 .book-spine-ornament {
   left: 8px;
   right: 8px;
-  height: 1px;
+  height: 2px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      currentColor 0 4px,
+      transparent 4px 7px
+    );
 }
 
 .book-spine[data-ornament-style="delicate"]
 .book-spine-ornament {
-  left: 10px;
-  right: 10px;
+  left: 11px;
+  right: 11px;
   height: 1px;
-  opacity: 0.48;
+  opacity: 0.42;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      currentColor 18%,
+      currentColor 82%,
+      transparent
+    );
 }
 
 .book-spine[data-ornament-style="dark"]
@@ -772,6 +793,15 @@ box-shadow:
   left: 7px;
   right: 7px;
   height: 1px;
+  opacity: 0.82;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      currentColor 12%,
+      currentColor 88%,
+      transparent 100%
+    );
   box-shadow:
     0 0 2px currentColor;
 }
@@ -2316,29 +2346,45 @@ const minColor =
 const colorSpread =
   maxColor - minColor;
 
-        let ornamentStyle =
+        
+const saturation =
+  maxColor === 0
+    ? 0
+    : colorSpread / maxColor;
+
+        const contrast =
+  Math.abs(
+    average - 128
+  ) / 128;
+
+
+let ornamentStyle =
   "classic";
 
 if (
-  colorSpread > 80
+  saturation > 0.48 &&
+  colorSpread > 70 &&
+  contrast > 0.18
 ) {
   ornamentStyle =
     "bold";
 } else if (
-  colorSpread > 55
+  average < 95 &&
+  contrast > 0.22
+) {
+  ornamentStyle =
+    "dark";
+} else if (
+  saturation > 0.34
 ) {
   ornamentStyle =
     "geometric";
 } else if (
-  average > 170
+  average > 170 &&
+  saturation < 0.24
 ) {
   ornamentStyle =
     "delicate";
-} else if (
-  average < 95
-) {
-  ornamentStyle =
-    "dark";
 }
 
 spine.dataset.ornamentStyle =
