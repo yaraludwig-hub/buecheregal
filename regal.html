@@ -842,6 +842,7 @@ box-shadow:
 .book-spine-pattern::before,
 .book-spine-pattern::after {
   position: absolute;
+  display: block;
   left: 50%;
 
   transform:
@@ -2887,42 +2888,10 @@ const ornaments =
   spine.querySelectorAll(
     ".book-spine-ornament"
   );
-        const centerOrnament =
+        const spinePattern =
   spine.querySelector(
-    ".book-spine-center-ornament"
+    ".book-spine-pattern"
   );
-if (centerOrnament) {
-
-  centerOrnament.textContent =
-    "◆";
-
-  if (
-    ornamentStyle ===
-    "bold"
-  ) {
-    centerOrnament.textContent =
-      "✹";
-  } else if (
-    ornamentStyle ===
-    "geometric"
-  ) {
-    centerOrnament.textContent =
-      "✦";
-  } else if (
-    ornamentStyle ===
-    "delicate"
-  ) {
-    centerOrnament.textContent =
-      "⋆";
-  } else if (
-    ornamentStyle ===
-    "dark"
-  ) {
-    centerOrnament.textContent =
-      "◇";
-  }
-
-}
         
         if (average > 165) {
 
@@ -2947,8 +2916,8 @@ if (centerOrnament) {
       "#57453a";
   }
 );
-          if (centerOrnament) {
-  centerOrnament.style.color =
+          if (spinePattern) {
+  spinePattern.style.color =
     "#57453a";
 }
 
@@ -2996,8 +2965,8 @@ if (centerOrnament) {
             : "#eee0c9";
   }
 );
-        if (centerOrnament) {
-  centerOrnament.style.color =
+       if (spinePattern) {
+  spinePattern.style.color =
     averageRed > averageGreen + 18
       ? "#d9a46f"
       : averageBlue > averageRed + 18
