@@ -2599,7 +2599,9 @@ let totalBlue = 0;
 
 let count = 0;
 
-
+const paletteBuckets =
+  new Map();
+        
         for (
           let i = 0;
           i < imageData.length;
@@ -2626,11 +2628,162 @@ if (
   totalBlue += b;
 
   count += 1;
+  const quantizedRed =
+  Math.round(
+    r / 32
+  ) * 32;
+
+const quantizedGreen =
+  Math.round(
+    g / 32
+  ) * 32;
+
+const quantizedBlue =
+  Math.round(
+    b / 32
+  ) * 32;
+
+const paletteKey =
+  `${quantizedRed},${quantizedGreen},${quantizedBlue}`;
+
+const paletteEntry =
+  paletteBuckets.get(
+    paletteKey
+  ) || {
+    count: 0,
+    red: 0,
+    green: 0,
+    blue: 0
+  };
+
+paletteEntry.count += 1;
+paletteEntry.red += r;
+paletteEntry.green += g;
+paletteEntry.blue += b;
+
+paletteBuckets.set(
+  paletteKey,
+  paletteEntry
+);
 }
 
         }
 
+const palette =
+  Array.from(
+    paletteBuckets.values()
+  )
+    .sort(
+      (a, b) =>
+        b.count - a.count
+    )
+    .slice(
+      0,
+      8
+    )
+    .map(
+      entry => ({
+        red:
+          Math.round(
+            entry.red /
+            entry.count
+          ),
 
+        green:
+          Math.round(
+            entry.green /
+            entry.count
+          ),
+
+        blue:
+          Math.round(
+            entry.blue /
+            entry.count
+          ),
+
+        count:
+          entry.count
+      })
+    );
+
+
+const basePaletteColor =
+  palette[0] || {
+    red: 90,
+    green: 70,
+    blue: 60
+  };
+
+
+const accentPaletteColor =
+  palette.find(
+    color => {
+
+      const difference =
+        Math.abs(
+          color.red -
+          basePaletteColor.red
+        ) +
+        Math.abs(
+          color.green -
+          basePaletteColor.green
+        ) +
+        Math.abs(
+          color.blue -
+          basePaletteColor.blue
+        );
+
+      return (
+        difference > 85
+      );
+
+    }
+  ) ||
+  palette[1] ||
+  basePaletteColor;
+
+
+const secondaryPaletteColor =
+  palette.find(
+    color => {
+
+      const baseDifference =
+        Math.abs(
+          color.red -
+          basePaletteColor.red
+        ) +
+        Math.abs(
+          color.green -
+          basePaletteColor.green
+        ) +
+        Math.abs(
+          color.blue -
+          basePaletteColor.blue
+        );
+
+      const accentDifference =
+        Math.abs(
+          color.red -
+          accentPaletteColor.red
+        ) +
+        Math.abs(
+          color.green -
+          accentPaletteColor.green
+        ) +
+        Math.abs(
+          color.blue -
+          accentPaletteColor.blue
+        );
+
+      return (
+        baseDifference > 70 &&
+        accentDifference > 60
+      );
+
+    }
+  ) ||
+  accentPaletteColor;
+        
         const average =
           count
             ? totalLuminance / count
@@ -2809,17 +2962,32 @@ spine.dataset.decorationLevel =
 
 const spineRed =
   Math.round(
-    averageRed * 0.92
+    (
+      basePaletteColor.red * 0.84
+    ) +
+    (
+      secondaryPaletteColor.red * 0.16
+    )
   );
 
 const spineGreen =
   Math.round(
-    averageGreen * 0.92
+    (
+      basePaletteColor.green * 0.84
+    ) +
+    (
+      secondaryPaletteColor.green * 0.16
+    )
   );
 
 const spineBlue =
   Math.round(
-    averageBlue * 0.92
+    (
+      basePaletteColor.blue * 0.84
+    ) +
+    (
+      secondaryPaletteColor.blue * 0.16
+    )
   );
 
 
