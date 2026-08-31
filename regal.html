@@ -896,16 +896,100 @@ box-shadow:
 
     .book-spine[data-ornament-style="classic"]
 .book-spine-pattern {
-  opacity: 0.13;
+  opacity: 0.16;
+  background-repeat: no-repeat;
+}
+
+
+/* CLASSIC – Variante 0 */
+.book-spine[data-ornament-style="classic"][data-design-variant="0"]
+.book-spine-pattern {
   background-image:
     radial-gradient(
       ellipse at center,
-      transparent 0 55%,
-      currentColor 57% 60%,
-      transparent 62%
+      transparent 0 52%,
+      currentColor 54% 58%,
+      transparent 60%
     );
+  background-position:
+    center 56%;
   background-size:
-    18px 24px;
+    26px 34px;
+}
+
+
+/* CLASSIC – Variante 1 */
+.book-spine[data-ornament-style="classic"][data-design-variant="2"]
+.book-spine-pattern {
+  background-image:
+    linear-gradient(
+      currentColor,
+      currentColor
+    ),
+    linear-gradient(
+      currentColor,
+      currentColor
+    );
+
+  background-size:
+    18px 1px,
+    18px 1px;
+
+  background-position:
+    center 34%,
+    center 66%;
+
+  background-repeat:
+    no-repeat;
+}
+
+
+/* CLASSIC – Variante 2 */
+.book-spine[data-ornament-style="classic"][data-design-variant="2"]
+.book-spine-pattern {
+  background-image:
+    radial-gradient(
+      circle,
+      currentColor 0 1.5px,
+      transparent 1.8px
+    );
+
+  background-position:
+    center 52%;
+
+  background-size:
+    18px 18px;
+
+  background-repeat:
+    no-repeat;
+}
+
+
+/* CLASSIC – Variante 3 */
+.book-spine[data-ornament-style="classic"][data-design-variant="3"]
+.book-spine-pattern {
+  background-image:
+    linear-gradient(
+      45deg,
+      transparent 47%,
+      currentColor 48% 52%,
+      transparent 53%
+    ),
+    linear-gradient(
+      -45deg,
+      transparent 47%,
+      currentColor 48% 52%,
+      transparent 53%
+    );
+
+  background-position:
+    center 55%;
+
+  background-size:
+    16px 16px;
+
+  background-repeat:
+    no-repeat;
 }
     
     .book-spine-center-ornament {
