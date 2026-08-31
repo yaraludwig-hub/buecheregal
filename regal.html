@@ -834,7 +834,39 @@ box-shadow:
   display: none;
 }
 
+.book-spine-motif-svg {
+  position: absolute;
+  inset: 0;
 
+  width: 100%;
+  height: 100%;
+
+  z-index: 1;
+  pointer-events: none;
+
+  overflow: visible;
+
+  color: currentColor;
+}
+
+.book-spine-motif-svg svg {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: visible;
+}
+
+.book-spine-motif-svg path,
+.book-spine-motif-svg circle,
+.book-spine-motif-svg ellipse,
+.book-spine-motif-svg line,
+.book-spine-motif-svg polyline,
+.book-spine-motif-svg polygon {
+  vector-effect:
+    non-scaling-stroke;
+}
 /* =================================
    MOTIVE
    ================================= */
