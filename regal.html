@@ -667,10 +667,11 @@ box-shadow:
   text-overflow: ellipsis;
 
   font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
+  "Palatino Linotype",
+  Palatino,
+  Georgia,
+  serif;
+       
   font-size: 11px;
 
   font-weight: 700;
@@ -2188,21 +2189,26 @@ let count = 0;
         ) {
 
           const r = imageData[i];
-          const g = imageData[i + 1];
-          const b = imageData[i + 2];
+const g = imageData[i + 1];
+const b = imageData[i + 2];
 
-          const luminance =
-            (0.2126 * r) +
-            (0.7152 * g) +
-            (0.0722 * b);
+const luminance =
+  (0.2126 * r) +
+  (0.7152 * g) +
+  (0.0722 * b);
 
-          totalLuminance += luminance;
+if (
+  luminance > 35 &&
+  luminance < 225
+) {
+  totalLuminance += luminance;
 
-totalRed += r;
-totalGreen += g;
-totalBlue += b;
+  totalRed += r;
+  totalGreen += g;
+  totalBlue += b;
 
-count += 1;
+  count += 1;
+}
 
         }
 
@@ -2230,17 +2236,17 @@ const averageBlue =
 
 const spineRed =
   Math.round(
-    averageRed * 0.72
+    averageRed * 0.92
   );
 
 const spineGreen =
   Math.round(
-    averageGreen * 0.72
+    averageGreen * 0.92
   );
 
 const spineBlue =
   Math.round(
-    averageBlue * 0.72
+    averageBlue * 0.92
   );
 
 
@@ -2322,24 +2328,30 @@ const ornaments =
         } else {
 
           if (title) {
+         
             title.style.color =
-              averageRed > averageBlue + 12
-  ? "#e7c47a"
-  : averageBlue > averageRed + 10
-    ? "#d9dce2"
-    : "#eee0c9"
-
+  averageRed > averageGreen + 18
+    ? "#d9a46f"
+    : averageBlue > averageRed + 18
+      ? "#c7d8ea"
+      : averageGreen > averageRed + 12
+        ? "#c9d6a3"
+        : "#eee0c9";
+            
             title.style.textShadow =
               "0 1px 2px rgba(0,0,0,0.85)";
           }
 
           if (author) {
+           
             author.style.color =
-  averageRed > averageBlue + 12
-    ? "#f0dfb8"
-    : averageBlue > averageRed + 10
-      ? "#eceef2"
-      : "#f4eadb";
+  averageRed > averageGreen + 18
+    ? "#ead0b2"
+    : averageBlue > averageRed + 18
+      ? "#e2ebf4"
+      : averageGreen > averageRed + 12
+        ? "#e0e7c7"
+        : "#f4eadb";
 
             author.style.textShadow =
               "0 1px 2px rgba(0,0,0,0.85)";
@@ -2348,20 +2360,24 @@ const ornaments =
           ornaments.forEach(
   ornament => {
     ornament.style.color =
-      averageRed > averageBlue + 12
-        ? "#e7c47a"
-        : averageBlue > averageRed + 10
-          ? "#d9dce2"
-          : "#eee0c9";
+      averageRed > averageGreen + 18
+        ? "#d9a46f"
+        : averageBlue > averageRed + 18
+          ? "#c7d8ea"
+          : averageGreen > averageRed + 12
+            ? "#c9d6a3"
+            : "#eee0c9";
   }
 );
-          if (centerOrnament) {
+        if (centerOrnament) {
   centerOrnament.style.color =
-    averageRed > averageBlue + 12
-      ? "#e7c47a"
-      : averageBlue > averageRed + 10
-        ? "#d9dce2"
-        : "#eee0c9";
+    averageRed > averageGreen + 18
+      ? "#d9a46f"
+      : averageBlue > averageRed + 18
+        ? "#c7d8ea"
+        : averageGreen > averageRed + 12
+          ? "#c9d6a3"
+          : "#eee0c9";
 }
         }
       } catch (error) {
