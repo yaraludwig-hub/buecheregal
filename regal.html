@@ -806,36 +806,9 @@ box-shadow:
     0 0 2px currentColor;
 }
 
-    .book-spine[data-ornament-style="classic"]
-.book-spine-center-ornament {
-  font-size: 7px;
-}
+    
 
-.book-spine[data-ornament-style="bold"]
-.book-spine-center-ornament {
-  font-size: 10px;
-  font-weight: 700;
-}
-
-.book-spine[data-ornament-style="geometric"]
-.book-spine-center-ornament {
-  font-size: 9px;
-}
-
-.book-spine[data-ornament-style="delicate"]
-.book-spine-center-ornament {
-  font-size: 7px;
-  opacity: 0.58;
-}
-
-.book-spine[data-ornament-style="dark"]
-.book-spine-center-ornament {
-  font-size: 8px;
-  text-shadow:
-    0 0 3px currentColor;
-}
-
-    .book-spine-pattern {
+   .book-spine-pattern {
   position: absolute;
   top: 18px;
   bottom: 68px;
@@ -843,182 +816,373 @@ box-shadow:
   right: 4px;
   z-index: 2;
   pointer-events: none;
-  opacity: 0;
-}
 
-    .book-spine[data-ornament-style="delicate"]
-.book-spine-pattern {
-  opacity: 0.22;
-  background-image:
-    radial-gradient(
-      circle,
-      currentColor 0 1px,
-      transparent 1.2px
-    );
-  background-size:
-    11px 14px;
-}
-
-    .book-spine[data-ornament-style="geometric"]
-.book-spine-pattern {
-  opacity: 0.16;
-  background-image:
-    repeating-linear-gradient(
-      45deg,
-      currentColor 0 1px,
-      transparent 1px 8px
-    );
-}
-
-   .book-spine[data-ornament-style="bold"]
-.book-spine-pattern {
   opacity: 0.18;
-  background-image:
-    repeating-linear-gradient(
-      135deg,
-      transparent 0 9px,
-      currentColor 9px 10px,
-      transparent 10px 18px
-    );
-}
-
-.book-spine[data-ornament-style="dark"]
-.book-spine-pattern {
-  opacity: 0.14;
-  background-image:
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 6px,
-      currentColor 6px 7px,
-      transparent 7px 13px
-    );
-}
-
-    .book-spine[data-ornament-style="classic"]
-.book-spine-pattern {
-  opacity: 0.16;
-  background-repeat: no-repeat;
-}
-
-
-/* CLASSIC – Variante 0 */
-.book-spine[data-ornament-style="classic"][data-design-variant="0"]
-.book-spine-pattern {
-  background-image:
-    radial-gradient(
-      ellipse at center,
-      transparent 0 52%,
-      currentColor 54% 58%,
-      transparent 60%
-    );
-  background-position:
-    center 56%;
-  background-size:
-    26px 34px;
-}
-
-
-/* CLASSIC – Variante 1 */
-.book-spine[data-ornament-style="classic"][data-design-variant="2"]
-.book-spine-pattern {
-  background-image:
-    linear-gradient(
-      currentColor,
-      currentColor
-    ),
-    linear-gradient(
-      currentColor,
-      currentColor
-    );
-
-  background-size:
-    18px 1px,
-    18px 1px;
-
-  background-position:
-    center 34%,
-    center 66%;
 
   background-repeat:
     no-repeat;
+
+  color:
+    currentColor;
 }
 
 
-/* CLASSIC – Variante 2 */
-.book-spine[data-ornament-style="classic"][data-design-variant="2"]
-.book-spine-pattern {
-  background-image:
-    radial-gradient(
-      circle,
-      currentColor 0 1.5px,
-      transparent 1.8px
-    );
-
-  background-position:
-    center 52%;
-
-  background-size:
-    18px 18px;
-
-  background-repeat:
-    no-repeat;
+/* Alte einzelne Mittelmarke ausblenden.
+   Die Motive übernimmt ab jetzt
+   das neue Pattern-System. */
+.book-spine-center-ornament {
+  display: none;
 }
 
 
-/* CLASSIC – Variante 3 */
-.book-spine[data-ornament-style="classic"][data-design-variant="3"]
-.book-spine-pattern {
-  background-image:
-    linear-gradient(
-      45deg,
-      transparent 47%,
-      currentColor 48% 52%,
-      transparent 53%
-    ),
-    linear-gradient(
-      -45deg,
-      transparent 47%,
-      currentColor 48% 52%,
-      transparent 53%
-    );
+/* =================================
+   MOTIVE
+   ================================= */
 
-  background-position:
-    center 55%;
-
-  background-size:
-    16px 16px;
-
-  background-repeat:
-    no-repeat;
-}
-    
-    .book-spine-center-ornament {
+.book-spine-pattern::before,
+.book-spine-pattern::after {
   position: absolute;
-
   left: 50%;
-  bottom: 54px;
-
-  z-index: 4;
 
   transform:
     translateX(-50%);
 
-  font-size: 9px;
-
   line-height: 1;
 
-  color: currentColor;
+  text-align: center;
 
-  opacity: 0.78;
+  color:
+    currentColor;
 
   text-shadow:
-    0
-    1px
-    1px
-    rgba(0, 0, 0, 0.28);
+    0 1px 2px
+    rgba(0,0,0,0.32);
 
   pointer-events: none;
 }
+
+
+/* Motiv 0 – klassische Raute */
+.book-spine[data-motif-variant="0"]
+.book-spine-pattern::before {
+  content: "◆";
+}
+
+.book-spine[data-motif-variant="0"]
+.book-spine-pattern::after {
+  content: "◇";
+}
+
+
+/* Motiv 1 – Sterne */
+.book-spine[data-motif-variant="1"]
+.book-spine-pattern::before {
+  content: "✦";
+}
+
+.book-spine[data-motif-variant="1"]
+.book-spine-pattern::after {
+  content: "⋆";
+}
+
+
+/* Motiv 2 – feine Lichtpunkte */
+.book-spine[data-motif-variant="2"]
+.book-spine-pattern::before {
+  content: "✧";
+}
+
+.book-spine[data-motif-variant="2"]
+.book-spine-pattern::after {
+  content: "•";
+}
+
+
+/* Motiv 3 – Doppelraute */
+.book-spine[data-motif-variant="3"]
+.book-spine-pattern::before {
+  content: "◇";
+}
+
+.book-spine[data-motif-variant="3"]
+.book-spine-pattern::after {
+  content: "◆";
+}
+
+
+/* Motiv 4 – kräftiges Emblem */
+.book-spine[data-motif-variant="4"]
+.book-spine-pattern::before {
+  content: "❖";
+}
+
+.book-spine[data-motif-variant="4"]
+.book-spine-pattern::after {
+  content: "✦";
+}
+
+
+/* Motiv 5 – sehr feine Sterne */
+.book-spine[data-motif-variant="5"]
+.book-spine-pattern::before {
+  content: "⋆";
+}
+
+.book-spine[data-motif-variant="5"]
+.book-spine-pattern::after {
+  content: "✧";
+}
+
+
+/* =================================
+   LAYOUTS
+   ================================= */
+
+
+/* Layout 0:
+   kleines Motiv oben und unten */
+.book-spine[data-layout-variant="0"]
+.book-spine-pattern::before {
+  top: 10%;
+}
+
+.book-spine[data-layout-variant="0"]
+.book-spine-pattern::after {
+  bottom: 8%;
+}
+
+
+/* Layout 1:
+   einzelnes größeres Mittelmotiv */
+.book-spine[data-layout-variant="1"]
+.book-spine-pattern::before {
+  top: 48%;
+
+  transform:
+    translate(-50%, -50%);
+}
+
+.book-spine[data-layout-variant="1"]
+.book-spine-pattern::after {
+  display: none;
+}
+
+
+/* Layout 2:
+   asymmetrisch */
+.book-spine[data-layout-variant="2"]
+.book-spine-pattern::before {
+  top: 22%;
+}
+
+.book-spine[data-layout-variant="2"]
+.book-spine-pattern::after {
+  bottom: 18%;
+}
+
+
+/* Layout 3:
+   Motive näher an den Enden */
+.book-spine[data-layout-variant="3"]
+.book-spine-pattern::before {
+  top: 4%;
+}
+
+.book-spine[data-layout-variant="3"]
+.book-spine-pattern::after {
+  bottom: 4%;
+}
+
+
+/* Layout 4:
+   zwei Motive im Mittelbereich */
+.book-spine[data-layout-variant="4"]
+.book-spine-pattern::before {
+  top: 36%;
+}
+
+.book-spine[data-layout-variant="4"]
+.book-spine-pattern::after {
+  bottom: 34%;
+}
+
+
+/* =================================
+   LINIEN
+   ================================= */
+
+
+/* Variante 0:
+   zwei kurze Zierlinien */
+.book-spine[data-line-variant="0"]
+.book-spine-pattern {
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent,
+      currentColor 18%,
+      currentColor 82%,
+      transparent
+    ),
+    linear-gradient(
+      90deg,
+      transparent,
+      currentColor 18%,
+      currentColor 82%,
+      transparent
+    );
+
+  background-size:
+    22px 1px,
+    22px 1px;
+
+  background-position:
+    center 17%,
+    center 83%;
+}
+
+
+/* Variante 1:
+   nur eine feine obere Linie */
+.book-spine[data-line-variant="1"]
+.book-spine-pattern {
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent,
+      currentColor 20%,
+      currentColor 80%,
+      transparent
+    );
+
+  background-size:
+    25px 1px;
+
+  background-position:
+    center 13%;
+}
+
+
+/* Variante 2:
+   zwei schmale Seitenlinien */
+.book-spine[data-line-variant="2"]
+.book-spine-pattern {
+  background-image:
+    linear-gradient(
+      currentColor,
+      currentColor
+    ),
+    linear-gradient(
+      currentColor,
+      currentColor
+    );
+
+  background-size:
+    1px 44%,
+    1px 44%;
+
+  background-position:
+    3px center,
+    calc(100% - 3px) center;
+}
+
+
+/* Variante 3:
+   kurze Linie unten */
+.book-spine[data-line-variant="3"]
+.book-spine-pattern {
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent,
+      currentColor 15%,
+      currentColor 85%,
+      transparent
+    );
+
+  background-size:
+    18px 1px;
+
+  background-position:
+    center 88%;
+}
+
+
+/* =================================
+   DEKORATIONSMENGE
+   ================================= */
+
+.book-spine[data-decoration-level="minimal"]
+.book-spine-pattern {
+  opacity: 0.11;
+}
+
+.book-spine[data-decoration-level="minimal"]
+.book-spine-pattern::after {
+  display: none;
+}
+
+
+.book-spine[data-decoration-level="medium"]
+.book-spine-pattern {
+  opacity: 0.18;
+}
+
+
+.book-spine[data-decoration-level="rich"]
+.book-spine-pattern {
+  opacity: 0.26;
+}
+
+
+/* =================================
+   GRUNDCHARAKTER
+   ================================= */
+
+.book-spine[data-ornament-style="classic"]
+.book-spine-pattern::before,
+.book-spine[data-ornament-style="classic"]
+.book-spine-pattern::after {
+  font-size: 7px;
+}
+
+
+.book-spine[data-ornament-style="bold"]
+.book-spine-pattern::before,
+.book-spine[data-ornament-style="bold"]
+.book-spine-pattern::after {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+
+.book-spine[data-ornament-style="geometric"]
+.book-spine-pattern::before,
+.book-spine[data-ornament-style="geometric"]
+.book-spine-pattern::after {
+  font-size: 9px;
+}
+
+
+.book-spine[data-ornament-style="delicate"]
+.book-spine-pattern::before,
+.book-spine[data-ornament-style="delicate"]
+.book-spine-pattern::after {
+  font-size: 6px;
+  opacity: 0.68;
+}
+
+
+.book-spine[data-ornament-style="dark"]
+.book-spine-pattern::before,
+.book-spine[data-ornament-style="dark"]
+.book-spine-pattern::after {
+  font-size: 8px;
+
+  text-shadow:
+    0 0 3px
+    currentColor;
+}  
     
     .book-spine-series {
       position: absolute;
