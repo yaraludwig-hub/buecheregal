@@ -2350,6 +2350,27 @@ const ornaments =
   spine.querySelector(
     ".book-spine-center-ornament"
   );
+if (centerOrnament) {
+
+  centerOrnament.textContent =
+    "◆";
+
+  if (
+    ornamentStyle ===
+    "geometric"
+  ) {
+    centerOrnament.textContent =
+      "✦";
+  } else if (
+    ornamentStyle ===
+    "delicate"
+  ) {
+    centerOrnament.textContent =
+      "⋆";
+  }
+
+}
+        
         if (average > 165) {
 
           if (title) {
