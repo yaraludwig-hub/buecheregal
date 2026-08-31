@@ -3060,6 +3060,20 @@ const ornaments =
   spine.querySelector(
     ".book-spine-pattern"
   );
+
+const accentColor =
+  `rgb(
+    ${accentPaletteColor.red},
+    ${accentPaletteColor.green},
+    ${accentPaletteColor.blue}
+  )`;
+
+const secondaryAccentColor =
+  `rgb(
+    ${secondaryPaletteColor.red},
+    ${secondaryPaletteColor.green},
+    ${secondaryPaletteColor.blue}
+  )`;
         
         if (average > 165) {
 
@@ -3081,12 +3095,13 @@ const ornaments =
           ornaments.forEach(
   ornament => {
     ornament.style.color =
-      "#57453a";
+      accentColor;
   }
 );
-          if (spinePattern) {
+
+if (spinePattern) {
   spinePattern.style.color =
-    "#57453a";
+    accentColor;
 }
 
         } else {
@@ -3124,24 +3139,13 @@ const ornaments =
           ornaments.forEach(
   ornament => {
     ornament.style.color =
-      averageRed > averageGreen + 18
-        ? "#d9a46f"
-        : averageBlue > averageRed + 18
-          ? "#c7d8ea"
-          : averageGreen > averageRed + 12
-            ? "#c9d6a3"
-            : "#eee0c9";
+      accentColor;
   }
 );
-       if (spinePattern) {
+
+if (spinePattern) {
   spinePattern.style.color =
-    averageRed > averageGreen + 18
-      ? "#d9a46f"
-      : averageBlue > averageRed + 18
-        ? "#c7d8ea"
-        : averageGreen > averageRed + 12
-          ? "#c9d6a3"
-          : "#eee0c9";
+    accentColor;
 }
         }
       } catch (error) {
