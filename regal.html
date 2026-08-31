@@ -2547,13 +2547,37 @@ if (
 spine.dataset.ornamentStyle =
   ornamentStyle;
 
-        const designSeed =
+       const seedText =
+  (
+    spine.querySelector(
+      ".book-spine-title"
+    )?.textContent ||
+    ""
+  ).toLowerCase();
+
+let titleSeed =
+  0;
+
+for (
+  let i = 0;
+  i < seedText.length;
+  i += 1
+) {
+  titleSeed =
+    (
+      titleSeed * 31 +
+      seedText.charCodeAt(i)
+    ) >>> 0;
+}
+
+const designSeed =
   Math.abs(
     Math.round(
       averageRed * 3 +
       averageGreen * 5 +
       averageBlue * 7 +
-      average * 11
+      average * 11 +
+      titleSeed
     )
   );
 
@@ -2564,6 +2588,59 @@ spine.dataset.designVariant =
   String(
     designVariant
   );
+
+        const layoutVariant =
+  Math.abs(
+    designSeed +
+    averageRed * 7 +
+    averageBlue * 3
+  ) % 5;
+
+const motifVariant =
+  Math.abs(
+    designSeed +
+    averageGreen * 11 +
+    colorSpread * 5
+  ) % 6;
+
+const lineVariant =
+  Math.abs(
+    designSeed +
+    Math.round(
+      saturation * 100
+    ) * 7
+  ) % 4;
+
+const decorationLevel =
+  saturation > 0.42
+    ? "rich"
+    : contrast > 0.24
+      ? "medium"
+      : "minimal";
+
+spine.dataset.layoutVariant =
+  String(
+    Math.floor(
+      layoutVariant
+    )
+  );
+
+spine.dataset.motifVariant =
+  String(
+    Math.floor(
+      motifVariant
+    )
+  );
+
+spine.dataset.lineVariant =
+  String(
+    Math.floor(
+      lineVariant
+    )
+  );
+
+spine.dataset.decorationLevel =
+  decorationLevel;
 
 const spineRed =
   Math.round(
