@@ -3834,6 +3834,58 @@ spinePattern.className =
 spine.appendChild(
   spinePattern
 );
+          const spineMotifSvg =
+  document.createElement("div");
+
+spineMotifSvg.className =
+  "book-spine-motif-svg";
+
+spineMotifSvg.innerHTML =
+  `
+  <svg
+    viewBox="0 0 100 300"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    <path
+      d="
+        M50 42
+        C34 66, 34 92, 50 114
+        C66 92, 66 66, 50 42
+        Z
+      "
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.4"
+      opacity="0.7"
+    />
+
+    <circle
+      cx="50"
+      cy="78"
+      r="4"
+      fill="currentColor"
+      opacity="0.55"
+    />
+
+    <path
+      d="
+        M50 188
+        C36 206, 36 226, 50 244
+        C64 226, 64 206, 50 188
+        Z
+      "
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.2"
+      opacity="0.55"
+    />
+  </svg>
+  `;
+
+spinePattern.appendChild(
+  spineMotifSvg
+);
           
           const title =
             document.createElement(
