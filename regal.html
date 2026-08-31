@@ -2233,6 +2233,23 @@ const averageBlue =
     ? Math.round(totalBlue / count)
     : 60;
 
+        const maxColor =
+  Math.max(
+    averageRed,
+    averageGreen,
+    averageBlue
+  );
+
+const minColor =
+  Math.min(
+    averageRed,
+    averageGreen,
+    averageBlue
+  );
+
+const colorSpread =
+  maxColor - minColor;
+
 
 const spineRed =
   Math.round(
@@ -2288,6 +2305,28 @@ spine.style.background =
           spine.querySelector(
             ".book-spine-author"
           );
+
+        if (title) {
+
+  if (colorSpread > 55) {
+
+    title.style.fontFamily =
+      '"Arial Narrow", "Helvetica Neue", Arial, sans-serif';
+
+    title.style.fontWeight =
+      "800";
+
+  } else {
+
+    title.style.fontFamily =
+      '"Palatino Linotype", Palatino, Georgia, serif';
+
+    title.style.fontWeight =
+      "700";
+
+  }
+
+}
 
 const ornaments =
   spine.querySelectorAll(
