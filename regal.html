@@ -3074,20 +3074,76 @@ const secondaryAccentColor =
     ${secondaryPaletteColor.green},
     ${secondaryPaletteColor.blue}
   )`;
+const accentLuminance =
+  (
+    0.2126 *
+    accentPaletteColor.red
+  ) +
+  (
+    0.7152 *
+    accentPaletteColor.green
+  ) +
+  (
+    0.0722 *
+    accentPaletteColor.blue
+  );
+
+const secondaryLuminance =
+  (
+    0.2126 *
+    secondaryPaletteColor.red
+  ) +
+  (
+    0.7152 *
+    secondaryPaletteColor.green
+  ) +
+  (
+    0.0722 *
+    secondaryPaletteColor.blue
+  );
+
+const spineLuminance =
+  (
+    0.2126 * spineRed
+  ) +
+  (
+    0.7152 * spineGreen
+  ) +
+  (
+    0.0722 * spineBlue
+  );
+
+const titlePaletteColor =
+  Math.abs(
+    accentLuminance -
+    spineLuminance
+  ) >=
+  Math.abs(
+    secondaryLuminance -
+    spineLuminance
+  )
+    ? accentColor
+    : secondaryAccentColor;
+
+const authorPaletteColor =
+  titlePaletteColor ===
+  accentColor
+    ? secondaryAccentColor
+    : accentColor;
         
         if (average > 165) {
 
           if (title) {
-            title.style.color =
-              "#2f241f";
+          title.style.color =
+  titlePaletteColor;
 
             title.style.textShadow =
               "0 1px 1px rgba(255,255,255,0.45)";
           }
 
           if (author) {
-            author.style.color =
-              "#3d3028";
+           author.style.color =
+  authorPaletteColor;
 
             author.style.textShadow =
               "0 1px 1px rgba(255,255,255,0.38)";
@@ -3109,13 +3165,7 @@ if (spinePattern) {
           if (title) {
          
             title.style.color =
-  averageRed > averageGreen + 18
-    ? "#d9a46f"
-    : averageBlue > averageRed + 18
-      ? "#c7d8ea"
-      : averageGreen > averageRed + 12
-        ? "#c9d6a3"
-        : "#eee0c9";
+  titlePaletteColor;
             
             title.style.textShadow =
               "0 1px 2px rgba(0,0,0,0.85)";
@@ -3123,14 +3173,8 @@ if (spinePattern) {
 
           if (author) {
            
-            author.style.color =
-  averageRed > averageGreen + 18
-    ? "#ead0b2"
-    : averageBlue > averageRed + 18
-      ? "#e2ebf4"
-      : averageGreen > averageRed + 12
-        ? "#e0e7c7"
-        : "#f4eadb";
+          author.style.color =
+  authorPaletteColor;
 
             author.style.textShadow =
               "0 1px 2px rgba(0,0,0,0.85)";
