@@ -2463,6 +2463,23 @@ if (
 spine.dataset.ornamentStyle =
   ornamentStyle;
 
+        const designSeed =
+  Math.abs(
+    Math.round(
+      averageRed * 3 +
+      averageGreen * 5 +
+      averageBlue * 7 +
+      average * 11
+    )
+  );
+
+const designVariant =
+  designSeed % 4;
+
+spine.dataset.designVariant =
+  String(
+    designVariant
+  );
 
 const spineRed =
   Math.round(
